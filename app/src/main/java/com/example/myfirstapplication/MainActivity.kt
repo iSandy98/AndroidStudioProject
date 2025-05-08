@@ -14,6 +14,7 @@ import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
+import com.example.myfirstapplication.screens.EntryScreen
 import com.example.myfirstapplication.screens.StartScreen
 import com.example.myfirstapplication.ui.theme.MyFirstApplicationTheme
 
@@ -25,9 +26,13 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
 
         setContent {
-            StartScreen()
+            EntryScreen()
         }
     }
 }
-
+val robotoFamily = FontFamily(
+    Font(R.font.roboto_regular, FontWeight.Normal),
+    Font(R.font.roboto_bold, FontWeight.Bold),
+    Font(R.font.roboto_medium, FontWeight.Medium)
+)
 

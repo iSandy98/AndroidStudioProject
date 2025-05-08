@@ -1,5 +1,6 @@
 package com.example.myfirstapplication.screens
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -36,8 +37,8 @@ import com.example.myfirstapplication.R
 fun TrackerScreen(){
     LazyColumn(
         modifier = Modifier.fillMaxSize()
-            .padding(start = 40.dp, end = 40.dp, top = 40.dp),
-
+            .padding(start = 40.dp, end = 40.dp, top = 60.dp),
+        verticalArrangement = Arrangement.spacedBy(40.dp)
     ){
         item{
             EmojiSlider()
@@ -94,7 +95,6 @@ fun DreamSlider() {
         modifier = Modifier.fillMaxWidth(),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Spacer(Modifier.size(60.dp))
         Text(
             text = "Как прошел Ваш сон?", fontSize = 16.sp,
             fontFamily = robotoFamily, fontWeight = FontWeight.Medium,
@@ -151,3 +151,10 @@ fun DreamSlider() {
         }
     }
 }
+
+@Composable
+fun Feedback() {
+
+}
+
+

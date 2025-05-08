@@ -15,6 +15,7 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.myfirstapplication.screens.EntryScreen
+import com.example.myfirstapplication.screens.Onboarding
 import com.example.myfirstapplication.screens.SignInScreen
 import com.example.myfirstapplication.screens.StartScreen
 import com.example.myfirstapplication.screens.TrackerScreen

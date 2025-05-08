@@ -1,5 +1,6 @@
 package com.example.myfirstapplication.screens
 
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -41,6 +42,9 @@ fun TrackerScreen(){
         item{
             EmojiSlider()
         }
+        item{
+            DreamSlider()
+        }
     }
 }
 
@@ -81,5 +85,69 @@ fun EmojiSlider(){
             Text(text = "Сохранить")
         }
     }
-
+}
+@Composable
+fun DreamSlider() {
+    var durationSliderPosition by remember { mutableFloatStateOf(0f) }
+    var qualitySliderPosition by remember { mutableFloatStateOf(0f) }
+    Column(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Spacer(Modifier.size(60.dp))
+        Text(
+            text = "Как прошел Ваш сон?", fontSize = 16.sp,
+            fontFamily = robotoFamily, fontWeight = FontWeight.Medium,
+            color = colorResource(R.color.blue_main)
+        )
+        Spacer(Modifier.size(16.dp))
+        Text(
+            text = "Длительность сна", fontSize = 12.sp,
+            fontWeight = FontWeight.Normal, fontFamily = robotoFamily,
+            color = colorResource(R.color.gray)
+        )
+        Spacer(Modifier.size(16.dp))
+        Slider(
+            value = durationSliderPosition,
+            onValueChange = { durationSliderPosition = it },
+            steps = 9,
+            valueRange = 0f..10f,
+            modifier = Modifier.fillMaxWidth(),
+            colors = SliderDefaults.colors(
+                thumbColor = colorResource(R.color.blue_main),
+                activeTrackColor = colorResource(R.color.blue_main)
+            )
+        )
+        Spacer(Modifier.size(30.dp))
+        Text(
+            text = "Качество сна", fontSize = 12.sp,
+            fontWeight = FontWeight.Normal, fontFamily = robotoFamily,
+            color = colorResource(R.color.gray)
+        )
+        Spacer(Modifier.size(16.dp))
+        Slider(
+            value = qualitySliderPosition,
+            onValueChange = { qualitySliderPosition = it },
+            steps = 9,
+            valueRange = 0f..10f,
+            modifier = Modifier.fillMaxWidth(),
+            colors = SliderDefaults.colors(
+                thumbColor = colorResource(R.color.blue_main),
+                activeTrackColor = colorResource(R.color.blue_main)
+            )
+        )
+        Spacer(Modifier.size(30.dp))
+        Button(
+            onClick = {},
+            modifier = Modifier.height(48.dp),
+            colors = ButtonColors(
+                containerColor = colorResource(R.color.blue_main),
+                contentColor = colorResource(R.color.white),
+                disabledContainerColor = colorResource(R.color.blue_disable),
+                disabledContentColor = colorResource(R.color.gray)
+            )
+        ) {
+            Text(text = "Сохранить")
+        }
+    }
 }

@@ -17,6 +17,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.example.myfirstapplication.screens.EntryScreen
 import com.example.myfirstapplication.screens.SignInScreen
 import com.example.myfirstapplication.screens.StartScreen
+import com.example.myfirstapplication.screens.TrackerScreen
 import com.example.myfirstapplication.ui.theme.MyFirstApplicationTheme
 
 
@@ -27,7 +28,7 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
 
         setContent {
-            SignInScreen()
+            TrackerScreen()
         }
     }
 }

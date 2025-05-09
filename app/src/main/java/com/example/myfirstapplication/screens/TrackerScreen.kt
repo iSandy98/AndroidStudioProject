@@ -3,6 +3,7 @@ package com.example.myfirstapplication.screens
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -13,6 +14,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonColors
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Slider
 import androidx.compose.material3.SliderColors
@@ -25,12 +27,15 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.myfirstapplication.R
+import com.example.myfirstapplication.ui.theme.Typography
 
 @Preview(showBackground = true)
 @Composable
@@ -48,8 +53,7 @@ fun TrackerScreen(){
         }
     }
 }
-val H2style = TextStyle(fontSize = 16.sp, fontFamily = robotoFamily,
-    fontWeight = FontWeight.Medium, color = Color(0xFF4B84F1))
+
 
 @Composable
 fun EmojiSlider(){
@@ -62,10 +66,7 @@ fun EmojiSlider(){
     ) {
         Text(
             text = "Ваше настроение на сегодня",
-            fontSize = 16.sp,
-            fontFamily = robotoFamily,
-            fontWeight = FontWeight.Medium,
-            color = colorResource(R.color.blue_main)
+            style = MaterialTheme.typography.titleLarge
         )
 
         Spacer(Modifier.size(16.dp))

@@ -1,5 +1,6 @@
 package com.example.myfirstapplication.screens
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -14,9 +15,11 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.icons.Icons
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Slider
 import androidx.compose.material3.SliderColors
@@ -34,12 +37,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.myfirstapplication.H5style
 import com.example.myfirstapplication.R
 import com.example.myfirstapplication.ui.theme.Typography
 
@@ -212,6 +217,39 @@ fun DreamSlider() {
     }
 }
 
+
+@Composable
+fun DrugTracker() {
+    Text("Трекер приема лекарств", style = H5style)
+    Spacer(Modifier.size(30.dp))
+    Image(
+        painter = painterResource(id = R.drawable.icon_drug),
+        contentDescription = "Иконка лекарства",
+        modifier = Modifier.size(24.dp)
+    )
+
+    Spacer(modifier = Modifier.width(15.dp))
+
+    Text(
+        text = "Принято 2/3",
+        style = MaterialTheme.typography.bodyMedium,
+        color = colorResource(R.color.gray)
+    )
+    Spacer(modifier = Modifier.width(54.dp))
+    Button(
+        onClick = {},
+        modifier = Modifier.height(48.dp),
+        colors = ButtonColors(
+            containerColor = colorResource(R.color.blue_main),
+            contentColor = colorResource(R.color.white),
+            disabledContainerColor = colorResource(R.color.blue_disable),
+            disabledContentColor = colorResource(R.color.gray)
+        )
+    ) {
+        Text(text = "Подробнее")
+    }
+}
+
 @Composable
 fun Feedback() {
     var feedbackText by remember { mutableStateOf("") }
@@ -221,14 +259,14 @@ fun Feedback() {
     ) {
         Text("Отклик лечащему врачу", style = H2style)
         Spacer(Modifier.size(10.dp))
-        Text("Пожеланию можете оставить сообщение Вашему лечащему врачу.", style = H2style)
+        Text("Пожеланию можете оставить сообщение Вашему лечащему врачу.", style = H5style)
         Spacer(Modifier.size(16.dp))
         TextField(value = feedbackText, onValueChange = { feedbackText = it},
             modifier = Modifier.fillMaxWidth().height(56.dp),
             shape = RoundedCornerShape(8.dp),
             maxLines = 1,
             textStyle = TextStyle(fontSize = 14.sp, fontFamily = robotoFamily, fontWeight = FontWeight.Normal),
-            placeholder = { Text(text = "Начни писать здесь", fontSize = 14.sp, color = colorResource(R.color.gray), fontFamily = robotoFamily) },
+            placeholder = { Text(text = "Начни писать здесь", style = H5style)},
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
             colors = TextFieldDefaults.colors(
                 focusedIndicatorColor = Color.Transparent,
@@ -249,7 +287,7 @@ fun Feedback() {
                 disabledContentColor = colorResource(R.color.gray)
             )
         ) {
-            Text(text = "Сохранить")
+            Text(text = "Отправить")
         }
     }
 }

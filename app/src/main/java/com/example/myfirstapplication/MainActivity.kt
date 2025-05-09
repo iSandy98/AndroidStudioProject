@@ -33,10 +33,80 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
 
         setContent {
-            TrackerScreen()
+            StartScreen()
         }
     }
+
 }
+
+
+//H1
+//Главный заголовок черный
+val H1style = TextStyle(fontSize = 20.sp, fontFamily = robotoFamily,
+    fontWeight = FontWeight.Bold, color = Color(0xFF313333))
+
+//Главный заголовок синий
+val H1styleVer2 = TextStyle(fontSize = 20.sp, fontFamily = robotoFamily,
+    fontWeight = FontWeight.Bold, color = Color(0xFF4B84F1))
+
+//H2
+val H2style = TextStyle(fontSize = 18.sp, fontFamily = robotoFamily,
+    fontWeight = FontWeight.Medium, color = Color(0xFF313333))
+
+//H3
+//Для заголовков синих
+val H3style = TextStyle(fontSize = 16.sp, fontFamily = robotoFamily,
+    fontWeight = FontWeight.Medium, color = Color(0xFF4B84F1))
+
+//H3 - для кнопки с белым текстом жирным
+val H3styleVer2 = TextStyle(fontSize = 16.sp, fontFamily = robotoFamily,
+    fontWeight = FontWeight.Bold, color = Color(0xFFFFFFFF))
+
+//H3 - для кнопки с синим жирным текстом
+val H3styleVer3 = TextStyle(fontSize = 16.sp, fontFamily = robotoFamily,
+    fontWeight = FontWeight.Bold, color = Color(0xFF4B84F1))
+
+//H4
+//Для текста TextField
+val H4style = TextStyle(fontSize = 14.sp, fontFamily = robotoFamily,
+    fontWeight = FontWeight.Normal, color = Color(0xFF8F9090))
+
+//Для синего заголовка
+val H4styleVer2 = TextStyle(fontSize = 14.sp, fontFamily = robotoFamily,
+    fontWeight = FontWeight.Medium, color = Color(0xFF4B84F1))
+
+//Для серого текста
+val H4styleVer3 = TextStyle(fontSize = 14.sp, fontFamily = robotoFamily,
+    fontWeight = FontWeight.Medium, color = Color(0xFF8F9090))
+
+//H5
+//Надзаголовок серый
+val H5style = TextStyle(fontSize = 12.sp, fontFamily = robotoFamily,
+    fontWeight = FontWeight.Normal, color = Color(0xFF8F9090))
+
+//Надзаголовок черный
+val H5styleBlack = TextStyle(fontSize = 12.sp, fontFamily = robotoFamily,
+    fontWeight = FontWeight.Normal, color = Color(0xFF515252))
+
+//Подзаголовок кнопки Черный
+val H5styleVer2 = TextStyle(fontSize = 12.sp, fontFamily = robotoFamily,
+    fontWeight = FontWeight.Normal, color = Color(0xFF313333))
+
+//Подзаголовок кнопки - Белый, жирный и для самой кнопки синей
+val H5styleVer3 = TextStyle(fontSize = 12.sp, fontFamily = robotoFamily,
+    fontWeight = FontWeight.Bold, color = Color(0xFFFFFFFF))
+
+//Подзаголовок кнопки Синий и текстов
+val H5styleVer4 = TextStyle(fontSize = 12.sp, fontFamily = robotoFamily,
+    fontWeight = FontWeight.Medium, color = Color(0xFF4B84F1))
+
+//Синий текст
+val H5styleVer5 = TextStyle(fontSize = 12.sp, fontFamily = robotoFamily,
+    fontWeight = FontWeight.Normal, color = Color(0xFF2F5EB7))
+
+//Черный текст для лекарств
+val H5styleVer6 = TextStyle(fontSize = 12.sp, fontFamily = robotoFamily,
+    fontWeight = FontWeight.Normal, color = Color(0xFF555555))
 
 
 

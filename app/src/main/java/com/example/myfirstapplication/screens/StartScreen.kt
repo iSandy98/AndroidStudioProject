@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonColors
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -40,8 +41,8 @@ fun StartScreen(){
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ){
-        Text(text = "Добро пожаловать!", fontSize = 20.sp, fontWeight = FontWeight.Bold, fontFamily = robotoFamily)
-        Text(text = "Выберите свою роль для входа", fontSize = 12.sp, fontWeight = FontWeight.Normal, fontFamily = robotoFamily, color = colorResource(R.color.gray))
+        Text(text = "Добро пожаловать!", style = MaterialTheme.typography.headlineMedium)
+        Text(text = "Выберите свою роль для входа", style = MaterialTheme.typography.labelLarge)
         Spacer(modifier = Modifier.size(50.dp))
         Button(
             onClick = {},

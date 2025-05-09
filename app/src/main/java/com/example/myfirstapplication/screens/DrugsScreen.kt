@@ -18,6 +18,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.CheckboxDefaults
@@ -157,6 +158,7 @@ fun DrugCheckList(selectedTime: String?) {
     }
 
     LazyColumn {
+
         items(filteredMedications) { medication ->
             var isTaken by remember { mutableStateOf(false) }
 
@@ -180,7 +182,7 @@ fun DrugCheckList(selectedTime: String?) {
                     Text(
                         text = medication.name,
                         style = H3style,
-                        color = if (isTaken) colorResource(R.color.gray) else colorResource(R.color.black)
+                        color = if (isTaken) colorResource(R.color.gray) else colorResource(R.color.blue_main)
                     )
 
                     Text(
@@ -190,6 +192,21 @@ fun DrugCheckList(selectedTime: String?) {
                     )
                 }
             }
+        }
+    }
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.Center
+    ) {
+        Button(
+            onClick = {},
+            modifier = Modifier.height(48.dp),
+            colors = ButtonDefaults.buttonColors(
+                containerColor = colorResource(R.color.blue_main),
+                contentColor = colorResource(R.color.white)
+            )
+        ) {
+            Text(text = "Сохранить")
         }
     }
 

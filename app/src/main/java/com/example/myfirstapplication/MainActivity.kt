@@ -26,7 +26,7 @@ import com.example.myfirstapplication.screens.robotoFamily
 import com.example.myfirstapplication.ui.theme.MyFirstApplicationTheme
 import com.example.myfirstapplication.classes.Drug
 import com.example.myfirstapplication.classes.TimeOfDayTreatment
-import com.example.myfirstapplication.screens.PatientProfileScreen
+
 
 
 
@@ -36,7 +36,7 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
 
         setContent {
-            PatientProfileScreen()
+
         }
     }
 }

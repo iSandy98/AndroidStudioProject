@@ -4,22 +4,9 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.font.Font
-import androidx.compose.ui.text.font.FontFamily
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
-import com.example.myfirstapplication.screens.EntryScreen
-import com.example.myfirstapplication.screens.Onboarding
-import com.example.myfirstapplication.screens.SignInScreen
-import com.example.myfirstapplication.screens.StartScreen
-import com.example.myfirstapplication.screens.TrackerScreen
-import com.example.myfirstapplication.ui.theme.MyFirstApplicationTheme
+import com.example.myfirstapplication.classes.Drug
+import com.example.myfirstapplication.classes.TimeOfDayTreatment
+import com.example.myfirstapplication.screens.PatientProfileScreen
 
 
 
@@ -29,8 +16,12 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
 
         setContent {
-            TrackerScreen()
+            PatientProfileScreen()
         }
     }
 }
+val selektra = Drug(name = "Селектра", dosage = "10мг", isMorningTake = true)
+val depakin = Drug(name = "Депакин", dosage = "500мг", isMorningTake = true)
+val database = TimeOfDayTreatment(listOf(selektra, depakin))
+
 

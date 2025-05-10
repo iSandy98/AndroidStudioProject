@@ -24,10 +24,9 @@ import com.example.myfirstapplication.screens.StartScreen
 import com.example.myfirstapplication.screens.TrackerScreen
 import com.example.myfirstapplication.screens.robotoFamily
 import com.example.myfirstapplication.ui.theme.MyFirstApplicationTheme
-import com.example.myfirstapplication.classes.Drug
 import com.example.myfirstapplication.classes.TimeOfDayTreatment
-
-
+import com.example.myfirstapplication.screens.DrugsScreen
+import com.example.myfirstapplication.screens.PatientProfile
 
 
 class MainActivity : ComponentActivity() {
@@ -36,15 +35,10 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
 
         setContent {
-
+            PatientProfile()
         }
     }
 }
-val selektra = Drug(name = "Селектра", dosage = "10мг", isMorningTake = true)
-val depakin = Drug(name = "Депакин", dosage = "500мг", isMorningTake = true)
-val database = TimeOfDayTreatment(listOf(selektra, depakin))
-
-
 
 //H1
 //Главный заголовок черный

@@ -43,12 +43,13 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.sp
 import com.example.myfirstapplication.H3style
 import com.example.myfirstapplication.H5style
+import com.example.myfirstapplication.classes.Drug
 
 
 @Preview(showBackground = true)
 @Composable
 fun DrugsScreen() {
-    var selectedTime by remember { mutableStateOf<String?>(null) }
+    var selectedTime by remember { mutableStateOf<String?>("Утро") }
 
     Column(
         modifier = Modifier.fillMaxSize()
@@ -137,29 +138,25 @@ fun TimeOfDayButton(timeOfDay: String,
     }
 }
 
-data class Medication(
-    val name: String,
-    val times: List<String> // Время приема: "Утро", "Обед" и т.д.
-)
 
 @Composable
 fun DrugCheckList(selectedTime: String?) {
-    val medications = remember {
+    val drugs = remember {
         listOf(
-            Medication("Аспирин", listOf("Утро", "Вечер")),
-            Medication("Витамины", listOf("Утро")),
-            Medication("Омепразол", listOf("Обед")),
-            Medication("Мелатонин", listOf("Ночь"))
+            Drug("Аспирин", "100мг", listOf("Утро", "Вечер")),
+            Drug("Витамины","100мг", listOf("Утро")),
+            Drug("Омепразол","100мг", listOf("Обед")),
+            Drug("Мелатонин","100мг", listOf("Ночь"))
         )
     }
 
-    val filteredMedications = medications.filter {
+    val filtereddrugs = drugs.filter {
         selectedTime == null || it.times.contains(selectedTime)
     }
 
     LazyColumn {
 
-        items(filteredMedications) { medication ->
+        items(filtereddrugs) { drug ->
             var isTaken by remember { mutableStateOf(false) }
 
             Row(
@@ -180,13 +177,13 @@ fun DrugCheckList(selectedTime: String?) {
 
                 Column(modifier = Modifier.weight(1f)) {
                     Text(
-                        text = medication.name,
+                        text = drug.name,
                         style = H3style,
                         color = if (isTaken) colorResource(R.color.gray) else colorResource(R.color.blue_main)
                     )
 
                     Text(
-                        text = medication.times.joinToString(", "),
+                        text = drug.times.joinToString(", "),
                         style = H5style,
                         color = colorResource(R.color.gray)
                     )
@@ -213,35 +210,8 @@ fun DrugCheckList(selectedTime: String?) {
 }
 
 @Composable
-fun TimeChip(
-    text: String,
-    isSelected: Boolean,
-    onClick: () -> Unit
-) {
-    Surface(
-        modifier = Modifier
-            .width(72.dp)
-            .height(36.dp)
-            .clip(RoundedCornerShape(18.dp))
-            .clickable(onClick = onClick),
-        color = if (isSelected) colorResource(R.color.blue_main) else Color.White,
-        shape = RoundedCornerShape(18.dp),
-        border = BorderStroke(1.dp, colorResource(R.color.blue_main))
-    ) {
-        Box(contentAlignment = Alignment.Center) {
-            Text(
-                text = text,
-                color = if (isSelected) Color.White else colorResource(R.color.blue_main),
-                fontSize = 14.sp,
-                fontWeight = FontWeight.Medium
-            )
-        }
-    }
-}
-
-@Composable
-fun MedicationItem(
-    medication: Medication,
+fun DrugItem(
+    drug: Drug,
     modifier: Modifier = Modifier
 ) {
     var isTaken by remember { mutableStateOf(false) }
@@ -263,7 +233,7 @@ fun MedicationItem(
 
         Column(modifier = Modifier.weight(1f)) {
             Text(
-                text = medication.name,
+                text = drug.name,
                 style = H3style,
                 color = if (isTaken) colorResource(R.color.gray) else colorResource(R.color.black)
             )
@@ -271,7 +241,7 @@ fun MedicationItem(
             Spacer(modifier = Modifier.height(4.dp))
 
             Text(
-                text = medication.times.joinToString(", "),
+                text = drug.times.joinToString(", "),
                 style = H5style,
                 color = colorResource(R.color.gray)
             )

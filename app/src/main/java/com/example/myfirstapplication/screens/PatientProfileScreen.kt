@@ -20,7 +20,7 @@ import com.example.myfirstapplication.H5style
 fun PatientProfile() {
     Column(
         modifier = Modifier.fillMaxWidth(),
-        horizontalAlignment = Alignment.CenterHorizontally
+
     ) {
         Text("ФИО:", style = H4styleVer2)
         Spacer(Modifier.size(5.dp))

@@ -1,6 +1,5 @@
 package com.example.myfirstapplication.screens
 
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -10,12 +9,10 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonColors
-import androidx.compose.material3.Shapes
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
@@ -32,11 +29,13 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
 import com.example.myfirstapplication.R
+import com.example.myfirstapplication.whoVisit
 
-@Preview (showBackground = true)
+
 @Composable
-fun SignInScreen(){
+fun SignInScreen(navController: NavHostController) {
 
     var text by remember { mutableStateOf("") }
 
@@ -69,7 +68,14 @@ fun SignInScreen(){
             Modifier.padding(start = 40.dp, end = 40.dp).fillMaxWidth()
         ) {
             Button(
-                onClick = {},
+                onClick = {
+                    if(whoVisit == "Врач"){
+                        navController.navigate("doctor_main_menu_screen")
+                    }else{
+                        navController.navigate("tracker_screen")
+                    }
+
+                },
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(48.dp),

@@ -13,15 +13,15 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHostController
 import com.example.myfirstapplication.H4styleVer2
 import com.example.myfirstapplication.R
 
-@Preview(showBackground = true)
+
 @Composable
 
-fun DoctorAppointment() {
+fun DoctorAppointmentScreen(navController: NavHostController) {
     Column(
         modifier = Modifier.fillMaxWidth(),
         horizontalAlignment = Alignment.CenterHorizontally

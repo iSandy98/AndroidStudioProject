@@ -32,13 +32,14 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
 import com.example.myfirstapplication.H3style
 import com.example.myfirstapplication.R
 
-@Preview(showBackground = true)
+
 @Composable
 
-fun EditDoctorProfile() {
+fun EditDoctorProfile(navController: NavHostController) {
     var fullname by remember { mutableStateOf("") }
     var dateofbirth by remember { mutableStateOf("") }
     var phonenumber by remember { mutableStateOf("") }

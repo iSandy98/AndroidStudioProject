@@ -43,6 +43,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
 import com.example.myfirstapplication.H3style
 import com.example.myfirstapplication.H4styleVer2
 import com.example.myfirstapplication.H4styleVer3
@@ -51,15 +52,16 @@ import com.example.myfirstapplication.R
 import com.example.myfirstapplication.classes.Drug
 import com.example.myfirstapplication.classes.DrugStatus
 import com.example.myfirstapplication.classes.Mood
+import com.example.myfirstapplication.whoVisit
 import java.time.LocalDate
 import java.time.format.TextStyle
 import java.util.Locale
 
-val whoVisit: String = "Пациен"
 
-@Preview(showBackground = true)
+
+
 @Composable
-fun PatientProfile() {
+fun PatientProfileScreen(navController: NavHostController) {
     if (whoVisit == "Пациент"){
         PatientPerspective()
     }else{

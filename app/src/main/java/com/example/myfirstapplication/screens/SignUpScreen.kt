@@ -28,17 +28,18 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
 import com.example.myfirstapplication.R
+import com.example.myfirstapplication.whoVisit
 
-@Preview( showBackground = true)
+
 @Composable
-fun SignUpScreen () {
+fun SignUpScreen(navController: NavHostController) {
 
     var phone by remember { mutableStateOf("") }
     var fullname by remember { mutableStateOf("") }
@@ -91,7 +92,13 @@ fun SignUpScreen () {
             Modifier.padding(start = 40.dp, end = 40.dp).fillMaxWidth()
         ) {
             Button(
-                onClick = {},
+                onClick = {
+                    if(whoVisit == "Врач") {
+                        navController.navigate("doctor_main_menu_screen")
+                    }else{
+                        navController.navigate("tracker_screen")
+                    }
+                },
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(48.dp),

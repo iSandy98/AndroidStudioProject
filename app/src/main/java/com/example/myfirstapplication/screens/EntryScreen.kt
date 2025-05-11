@@ -1,6 +1,5 @@
 package com.example.myfirstapplication.screens
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -21,21 +20,20 @@ import androidx.compose.ui.draw.paint
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.Font
-import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
 import com.example.myfirstapplication.R
+import com.example.myfirstapplication.whoVisit
 
-@Preview (showBackground = true)
+
 @Composable
-fun EntryScreen(){
+fun EntryScreen(navController: NavHostController) {
     Column(
         modifier = Modifier.fillMaxSize()
             .paint(
-            // Replace with your image id
             painterResource(id = R.drawable.backgroud),
             contentScale = ContentScale.FillBounds),
 
@@ -49,7 +47,9 @@ fun EntryScreen(){
             Text(text = "Ваш персональный трекер здоровья и связи с врачом", fontSize = 12.sp, fontWeight = FontWeight.Normal, fontFamily = robotoFamily, color = colorResource(R.color.gray))
             Spacer(modifier = Modifier.size(360.dp))
             Button(
-                onClick = {},
+                onClick = {
+                    navController.navigate("sign_up_screen")
+                },
                 modifier = Modifier.fillMaxWidth().height(48.dp),
                 colors = ButtonColors(
                     containerColor = colorResource(R.color.blue_main),
@@ -64,7 +64,9 @@ fun EntryScreen(){
             Row(){
                 Text(text = "Уже есть аккаунт? ", fontSize = 14.sp, fontWeight = FontWeight.Normal, fontFamily = robotoFamily)
                 Text(text = "Войти", fontSize = 14.sp, fontWeight = FontWeight.Bold, fontFamily = robotoFamily, color = colorResource(R.color.white),
-                    modifier = Modifier.clickable {  })
+                    modifier = Modifier.clickable {
+                        navController.navigate("sign_in_screen")
+                    })
             }
         }
 

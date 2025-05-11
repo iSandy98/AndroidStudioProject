@@ -2,7 +2,6 @@ package com.example.myfirstapplication.screens
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -15,14 +14,11 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.icons.Icons
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Slider
-import androidx.compose.material3.SliderColors
 import androidx.compose.material3.SliderDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -41,16 +37,15 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
 import com.example.myfirstapplication.H5style
 import com.example.myfirstapplication.R
-import com.example.myfirstapplication.ui.theme.Typography
 
-@Preview(showBackground = true)
+
 @Composable
-fun TrackerScreen(){
+fun TrackerScreen(navController: NavHostController) {
     LazyColumn(
         modifier = Modifier.fillMaxSize()
             .padding(start = 40.dp, end = 40.dp, top = 60.dp),
@@ -61,6 +56,9 @@ fun TrackerScreen(){
         }
         item{
             DreamSlider()
+        }
+        item {
+            DrugTracker(navController)
         }
         item {
             Feedback()
@@ -219,35 +217,42 @@ fun DreamSlider() {
 
 
 @Composable
-fun DrugTracker() {
-    Text("Трекер приема лекарств", style = H5style)
-    Spacer(Modifier.size(30.dp))
-    Image(
-        painter = painterResource(id = R.drawable.icon_drug),
-        contentDescription = "Иконка лекарства",
-        modifier = Modifier.size(24.dp)
-    )
+fun DrugTracker(navController: NavHostController) {
+        Column(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Text("Трекер приема лекарств", style = H5style)
+            Spacer(Modifier.size(30.dp))
+            Image(
+                painter = painterResource(id = R.drawable.icon_drug),
+                contentDescription = "Иконка лекарства",
+                modifier = Modifier.size(24.dp)
+            )
 
-    Spacer(modifier = Modifier.width(15.dp))
+            Spacer(modifier = Modifier.width(15.dp))
 
-    Text(
-        text = "Принято 2/3",
-        style = MaterialTheme.typography.bodyMedium,
-        color = colorResource(R.color.gray)
-    )
-    Spacer(modifier = Modifier.width(54.dp))
-    Button(
-        onClick = {},
-        modifier = Modifier.height(48.dp),
-        colors = ButtonColors(
-            containerColor = colorResource(R.color.blue_main),
-            contentColor = colorResource(R.color.white),
-            disabledContainerColor = colorResource(R.color.blue_disable),
-            disabledContentColor = colorResource(R.color.gray)
-        )
-    ) {
-        Text(text = "Подробнее")
-    }
+            Text(
+                text = "Принято 2/3",
+                style = MaterialTheme.typography.bodyMedium,
+                color = colorResource(R.color.gray)
+            )
+            Spacer(modifier = Modifier.width(54.dp))
+            Button(
+                onClick = {
+                    navController.navigate("drugs_screen")
+                },
+                modifier = Modifier.height(48.dp),
+                colors = ButtonColors(
+                    containerColor = colorResource(R.color.blue_main),
+                    contentColor = colorResource(R.color.white),
+                    disabledContainerColor = colorResource(R.color.blue_disable),
+                    disabledContentColor = colorResource(R.color.gray)
+                )
+            ) {
+                Text(text = "Подробнее")
+            }
+        }
 }
 
 @Composable

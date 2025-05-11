@@ -15,17 +15,15 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
-import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
 import com.example.myfirstapplication.R
+import com.example.myfirstapplication.whoVisit
 
 val robotoFamily = FontFamily(
     Font(R.font.roboto_regular, FontWeight.Normal),
@@ -33,9 +31,8 @@ val robotoFamily = FontFamily(
     Font(R.font.roboto_medium, FontWeight.Medium)
 )
 
-@Preview (showBackground = true)
 @Composable
-fun StartScreen(){
+fun StartScreen(navController: NavHostController) {
     Column(
         modifier = Modifier.fillMaxSize().padding(start = 40.dp, end = 40.dp),
         verticalArrangement = Arrangement.Center,
@@ -45,7 +42,10 @@ fun StartScreen(){
         Text(text = "Выберите свою роль для входа", style = MaterialTheme.typography.labelLarge)
         Spacer(modifier = Modifier.size(50.dp))
         Button(
-            onClick = {},
+            onClick = {
+                navController.navigate("entry_screen")
+                whoVisit = "Врач"
+            },
             modifier = Modifier.fillMaxWidth().height(48.dp),
             colors = ButtonColors(
                 containerColor = colorResource(R.color.blue_main),
@@ -58,7 +58,10 @@ fun StartScreen(){
         }
         Spacer(modifier = Modifier.size(20.dp))
         Button(
-            onClick = {},
+            onClick = {
+                navController.navigate("entry_screen")
+                whoVisit = "Пациент"
+            },
             modifier = Modifier.fillMaxWidth().height(48.dp),
             colors = ButtonColors(
                 containerColor = colorResource(R.color.blue_main),

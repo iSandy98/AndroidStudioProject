@@ -4,31 +4,32 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material3.BottomAppBar
+import androidx.compose.material.icons.filled.CheckCircle
+import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.NavigationBar
+import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.LineHeightStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavGraph.Companion.findStartDestination
+import androidx.navigation.NavHostController
 import com.example.myfirstapplication.screens.StartScreen
 import com.example.myfirstapplication.screens.robotoFamily
 import com.example.myfirstapplication.screens.PatientProfileScreen
@@ -39,7 +40,6 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import com.example.myfirstapplication.screens.DoctorAppointmentScreen
 import com.example.myfirstapplication.screens.DoctorMainMenuScreen
 import com.example.myfirstapplication.screens.DoctorProfileScreen
-import com.example.myfirstapplication.screens.DrugTracker
 import com.example.myfirstapplication.screens.DrugsAddScreen
 import com.example.myfirstapplication.screens.DrugsScreen
 import com.example.myfirstapplication.screens.EditDoctorProfile
@@ -64,46 +64,91 @@ class MainActivity : ComponentActivity() {
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MyTopBar(
     title: String,
     onNavigationClick: () -> Unit
 ) {
-    Box(
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(56.dp)
-            .background(Color(0xFFD0EBFF))
+    val showBackButton = title.isNotBlank() && title != "Онбординг" && title != "Начало"
+
+    TopAppBar(
+        title = { Text(text = title) },
+        navigationIcon = {
+            if (showBackButton) {
+                IconButton(onClick = onNavigationClick) {
+                    Icon(
+                        imageVector = Icons.Default.ArrowBack,
+                        contentDescription = "Назад"
+                    )
+                }
+            }
+        },
+        colors = TopAppBarDefaults.topAppBarColors(
+            containerColor = MaterialTheme.colorScheme.primary,
+            titleContentColor = MaterialTheme.colorScheme.onPrimary,
+            navigationIconContentColor = MaterialTheme.colorScheme.onPrimary
+        )
+    )
+}
+
+@Composable
+fun MyBottomBar(
+    navController: NavHostController,
+    currentRoute: String?
+) {
+    val items = listOf(
+        BottomNavItem(
+            route = "tracker_screen",
+            icon = Icons.Default.Home,
+            label = "Трекер"
+        ),
+        BottomNavItem(
+            route = "drugs_screen",
+            icon = Icons.Default.CheckCircle,
+            label = "Лекарства"
+        ),
+        BottomNavItem(
+            route = "patient_profile_screen",
+            icon = Icons.Default.Person,
+            label = "Профиль"
+        )
+    )
+
+    NavigationBar(
+        containerColor = MaterialTheme.colorScheme.surfaceVariant,
+        tonalElevation = 8.dp
     ) {
-        IconButton(
-            onClick = onNavigationClick,
-            modifier = Modifier
-                .size(35.dp)
-                .align(Alignment.CenterStart)
-                .padding(start = 16.dp, top = 10.dp, bottom = 11.dp)
-        ) {
-            Icon(
-                imageVector = Icons.Default.ArrowBack,
-                contentDescription = "Назад",
-                tint = Color.Black
+        items.forEach { item ->
+            NavigationBarItem(
+                icon = { Icon(item.icon, contentDescription = item.label) },
+                label = { Text(item.label) },
+                selected = currentRoute == item.route,
+                onClick = {
+                    navController.navigate(item.route) {
+                        popUpTo(navController.graph.findStartDestination().id) {
+                            saveState = true
+                        }
+                        launchSingleTop = true
+                        restoreState = true
+                    }
+                }
             )
         }
-
-        Text(
-            text = title,
-            fontSize = 20.sp,
-            fontWeight = FontWeight.Bold,
-            color = Color.Black,
-            modifier = Modifier.align(LineHeightStyle.Alignment.Center)
-        )
     }
 }
+
+data class BottomNavItem(
+    val route: String,
+    val icon: ImageVector,
+    val label: String
+)
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MyApp() {
     val navController = rememberNavController()
-    val currentBackStackEntry by navController.currentBackStackEntryAsState()
+    val currentBackStackEntry = navController.currentBackStackEntryAsState().value
     val currentRoute = currentBackStackEntry?.destination?.route
 
     val screenTitles = mapOf(
@@ -122,6 +167,12 @@ fun MyApp() {
         "doctor_profile_screen" to "Профиль врача",
         "doctor_main_menu_screen" to "Меню врача",
         "doctor_appointment_screen" to "Приемы"
+    )
+
+    val showBottomBar = currentRoute in listOf(
+        "tracker_screen",
+        "drugs_screen",
+        "patient_profile_screen"
     )
 
     val title = screenTitles[currentRoute] ?: ""
@@ -155,9 +206,9 @@ fun MyApp() {
             composable("doctor_appointment_screen") { DoctorAppointmentScreen(navController) }
         }
 
-        BottomAppBar {
-            // тут будет bottom bar
-        }
+//        if (showBottomBar) {
+            MyBottomBar(navController, currentRoute)
+//        }
     }
 }
 

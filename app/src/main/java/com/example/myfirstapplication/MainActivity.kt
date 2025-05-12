@@ -62,7 +62,9 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
 
         setContent {
-            MyApp()
+            val navController = rememberNavController()
+//            MyApp()
+            DrugsAddScreen(navController)
         }
     }
 }

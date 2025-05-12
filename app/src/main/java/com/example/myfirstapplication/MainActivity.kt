@@ -5,7 +5,9 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.CheckCircle
@@ -17,6 +19,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
@@ -119,6 +122,7 @@ fun MyBottomBar(
         containerColor = MaterialTheme.colorScheme.surfaceVariant,
         tonalElevation = 8.dp
     ) {
+        val backStackEntry = navController.currentBackStackEntryAsState().value
         items.forEach { item ->
             NavigationBarItem(
                 icon = { Icon(item.icon, contentDescription = item.label) },
@@ -172,43 +176,49 @@ fun MyApp() {
     val showBottomBar = currentRoute in listOf(
         "tracker_screen",
         "drugs_screen",
-        "patient_profile_screen"
+        "patient_profile_screen",
+        "doctor_main_menu_screen"
     )
 
     val title = screenTitles[currentRoute] ?: ""
 
-    Column(
-        modifier = Modifier.fillMaxSize()
+    Scaffold(
+        topBar = {
+            MyTopBar(
+                title = title,
+                onNavigationClick = { navController.popBackStack() }
+            )
+        },
+        bottomBar = {
+            if (showBottomBar) {
+                MyBottomBar(navController, currentRoute)
+            }
+        },
     ) {
-        MyTopBar(
-            title = title,
-            onNavigationClick = { navController.popBackStack() }
-        )
-
-        NavHost(
-            navController = navController,
-            startDestination = "onboarding_screen"
-        ) {
-            composable("start_screen") { StartScreen(navController) }
-            composable("tracker_screen") { TrackerScreen(navController) }
-            composable("sign_up_screen") { SignUpScreen(navController) }
-            composable("sign_in_screen") { SignInScreen(navController) }
-            composable("patient_profile_screen") { PatientProfileScreen(navController) }
-            composable("onboarding_screen") { Onboarding(navController) }
-            composable("notification_screen") { Notifications(navController) }
-            composable("entry_screen") { EntryScreen(navController) }
-            composable("edit_patient_screen") { EditPatientProfile(navController) }
-            composable("edit_doctor_screen") { EditDoctorProfile(navController) }
-            composable("drugs_screen") { DrugsScreen(navController) }
-            composable("drugs_add_screen") { DrugsAddScreen(navController) }
-            composable("doctor_profile_screen") { DoctorProfileScreen(navController) }
-            composable("doctor_main_menu_screen") { DoctorMainMenuScreen(navController) }
-            composable("doctor_appointment_screen") { DoctorAppointmentScreen(navController) }
+        Column(
+            modifier = Modifier.fillMaxSize().padding(it)
+        ){
+            NavHost(
+                navController = navController,
+                startDestination = "onboarding_screen"
+            ) {
+                composable("start_screen") { StartScreen(navController) }
+                composable("tracker_screen") { TrackerScreen(navController) }
+                composable("sign_up_screen") { SignUpScreen(navController) }
+                composable("sign_in_screen") { SignInScreen(navController) }
+                composable("patient_profile_screen") { PatientProfileScreen(navController) }
+                composable("onboarding_screen") { Onboarding(navController) }
+                composable("notification_screen") { Notifications(navController) }
+                composable("entry_screen") { EntryScreen(navController) }
+                composable("edit_patient_screen") { EditPatientProfile(navController) }
+                composable("edit_doctor_screen") { EditDoctorProfile(navController) }
+                composable("drugs_screen") { DrugsScreen(navController) }
+                composable("drugs_add_screen") { DrugsAddScreen(navController) }
+                composable("doctor_profile_screen") { DoctorProfileScreen(navController) }
+                composable("doctor_main_menu_screen") { DoctorMainMenuScreen(navController) }
+                composable("doctor_appointment_screen") { DoctorAppointmentScreen(navController) }
+            }
         }
-
-//        if (showBottomBar) {
-            MyBottomBar(navController, currentRoute)
-//        }
     }
 }
 

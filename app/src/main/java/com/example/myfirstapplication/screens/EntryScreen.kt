@@ -43,7 +43,7 @@ fun EntryScreen(navController: NavHostController) {
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Text(text = "Заботьтесь о себе легко", fontSize = 20.sp, fontWeight = FontWeight.Bold, fontFamily = robotoFamily)
+            Text(text = "Заботьтесь о себе легко", fontSize = 20.sp, fontWeight = FontWeight.Bold, fontFamily = robotoFamily,color = colorResource(R.color.blue_main ))
             Text(text = "Ваш персональный трекер здоровья и связи с врачом", fontSize = 12.sp, fontWeight = FontWeight.Normal, fontFamily = robotoFamily, color = colorResource(R.color.gray))
             Spacer(modifier = Modifier.size(360.dp))
             Button(

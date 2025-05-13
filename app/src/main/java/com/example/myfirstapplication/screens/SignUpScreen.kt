@@ -36,6 +36,8 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.example.myfirstapplication.R
 import com.example.myfirstapplication.whoVisit
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 
 
 @Composable
@@ -47,15 +49,15 @@ fun SignUpScreen(navController: NavHostController) {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(start = 24.dp, end = 24.dp),
+            .padding(start = 20.dp, end = 20.dp),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.Start
     ){
-        Text(text = "Добро пожаловать в Moody!", fontSize = 18.sp, fontWeight = FontWeight.Medium, fontFamily = robotoFamily)
-        Spacer(Modifier.size(8.dp))
+        Text(text = "Добро пожаловать в Moody!", fontSize = 20.sp, fontWeight = FontWeight.Medium, fontFamily = robotoFamily, color = colorResource(R.color.blue_main))
+        Spacer(Modifier.size(3.dp))
         Text(text = "Зарегистрируйтесь, чтобы начать", fontSize = 12.sp, fontWeight = FontWeight.Normal,
-            fontFamily = robotoFamily, color = colorResource(R.color.black))
-        Spacer(Modifier.size(16.dp))
+            fontFamily = robotoFamily, color = colorResource(R.color.black_500))
+        Spacer(Modifier.size(32.dp))
         Text(text = "Ваше ФИО", fontSize = 12.sp, fontWeight = FontWeight.Normal,
             fontFamily = robotoFamily, color = colorResource(R.color.gray))
         Spacer(Modifier.size(8.dp))
@@ -67,12 +69,21 @@ fun SignUpScreen(navController: NavHostController) {
             placeholder = { Text(text = "Начните вводить ФИО", fontSize = 14.sp, color = colorResource(R.color.gray), fontFamily = robotoFamily) },
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
             colors = TextFieldDefaults.colors(
+                focusedContainerColor = Color.White,
+                unfocusedContainerColor = Color.White,
+                disabledContainerColor = Color.White,
                 focusedIndicatorColor = Color.Transparent,
                 unfocusedIndicatorColor = Color.Transparent,
-                disabledIndicatorColor = Color.Transparent
+                disabledIndicatorColor = Color.Transparent,
+                cursorColor = Color.Gray,
+
+
             )
 
         )
+        Spacer(Modifier.size(12.dp))
+        Text(text = "Номер телефона", fontSize = 12.sp, fontWeight = FontWeight.Normal,
+            fontFamily = robotoFamily, color = colorResource(R.color.gray))
         Spacer(Modifier.size(8.dp))
         TextField(value = phone, onValueChange = { phone = it},
             modifier = Modifier.fillMaxWidth().height(56.dp),
@@ -82,12 +93,17 @@ fun SignUpScreen(navController: NavHostController) {
             placeholder = { Text(text = "+7", fontSize = 14.sp, color = colorResource(R.color.gray), fontFamily = robotoFamily) },
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
             colors = TextFieldDefaults.colors(
+                focusedContainerColor = Color.White,
+                unfocusedContainerColor = Color.White,
+                disabledContainerColor = Color.White,
                 focusedIndicatorColor = Color.Transparent,
                 unfocusedIndicatorColor = Color.Transparent,
-                disabledIndicatorColor = Color.Transparent
+                disabledIndicatorColor = Color.Transparent,
+                cursorColor = Color.Gray
+
             )
         )
-        Spacer(Modifier.size(20.dp))
+        Spacer(Modifier.size(32.dp))
         Box(
             Modifier.padding(start = 40.dp, end = 40.dp).fillMaxWidth()
         ) {
@@ -119,7 +135,9 @@ fun SignUpScreen(navController: NavHostController) {
         ){
             Text(text = "Уже есть аккаунт? ", fontSize = 12.sp, fontWeight = FontWeight.Normal, fontFamily = robotoFamily)
             Text(text = "Войти", fontSize = 14.sp, fontWeight = FontWeight.Bold, fontFamily = robotoFamily, color = colorResource(R.color.blue_main),
-                modifier = Modifier.clickable {  })
+                modifier = Modifier.clickable {
+                    navController.navigate("sign_in_screen")
+                })
         }
 
 

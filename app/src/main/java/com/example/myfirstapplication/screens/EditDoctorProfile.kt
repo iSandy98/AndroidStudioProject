@@ -13,6 +13,8 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonColors
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
@@ -33,6 +35,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import com.example.myfirstapplication.H1styleVer2
 import com.example.myfirstapplication.H3style
 import com.example.myfirstapplication.R
 
@@ -44,6 +47,17 @@ fun EditDoctorProfile(navController: NavHostController) {
     var dateofbirth by remember { mutableStateOf("") }
     var phonenumber by remember { mutableStateOf("") }
     var address by remember { mutableStateOf("") }
+
+    val colors = OutlinedTextFieldDefaults.colors(
+        focusedContainerColor = Color.White,    // Белый фон в фокусированном состоянии
+        unfocusedContainerColor = Color.White,  // Белый фон в обычном состоянии
+        disabledContainerColor = Color.White,   // Белый фон в отключенном состоянии
+
+        focusedBorderColor = Color.Gray,        // Серая обводка в фокусированном состоянии
+        unfocusedBorderColor = Color.Gray,      // Серая обводка в обычном состоянии
+        disabledBorderColor = Color.LightGray   // Светло-серая обводка в отключенном состоянии
+    )
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -53,7 +67,7 @@ fun EditDoctorProfile(navController: NavHostController) {
     ) {
         Text(
             text = "Редактирование профиля",
-            style = H3style,
+            style = H1styleVer2,
             textAlign = TextAlign.Center,
             modifier = Modifier.fillMaxWidth()
         )
@@ -68,10 +82,10 @@ fun EditDoctorProfile(navController: NavHostController) {
             )
         )
         Spacer(modifier = Modifier.size(8.dp))
-        TextField(
+        OutlinedTextField(
             value = fullname, onValueChange = { fullname = it },
             modifier = Modifier.fillMaxWidth().height(56.dp),
-            shape = RoundedCornerShape(8.dp),
+            shape = RoundedCornerShape(16.dp),
             maxLines = 1,
             textStyle = TextStyle(
                 fontSize = 14.sp,
@@ -87,11 +101,7 @@ fun EditDoctorProfile(navController: NavHostController) {
                 )
             },
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
-            colors = TextFieldDefaults.colors(
-                focusedIndicatorColor = Color.Transparent,
-                unfocusedIndicatorColor = Color.Transparent,
-                disabledIndicatorColor = Color.Transparent
-            )
+            colors = colors
         )
         Spacer(modifier = Modifier.size(8.dp))
         Text(
@@ -104,10 +114,10 @@ fun EditDoctorProfile(navController: NavHostController) {
             )
         )
         Spacer(modifier = Modifier.size(8.dp))
-        TextField(
+        OutlinedTextField(
             value = dateofbirth, onValueChange = { dateofbirth = it },
             modifier = Modifier.fillMaxWidth().height(56.dp),
-            shape = RoundedCornerShape(8.dp),
+            shape = RoundedCornerShape(16.dp),
             maxLines = 1,
             textStyle = TextStyle(
                 fontSize = 14.sp,
@@ -123,11 +133,7 @@ fun EditDoctorProfile(navController: NavHostController) {
                 )
             },
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
-            colors = TextFieldDefaults.colors(
-                focusedIndicatorColor = Color.Transparent,
-                unfocusedIndicatorColor = Color.Transparent,
-                disabledIndicatorColor = Color.Transparent
-            )
+            colors = colors
         )
         Spacer(modifier = Modifier.size(8.dp))
         Text(
@@ -140,10 +146,10 @@ fun EditDoctorProfile(navController: NavHostController) {
             )
         )
         Spacer(modifier = Modifier.size(8.dp))
-        TextField(
+        OutlinedTextField(
             value = phonenumber, onValueChange = { phonenumber = it },
             modifier = Modifier.fillMaxWidth().height(56.dp),
-            shape = RoundedCornerShape(8.dp),
+            shape = RoundedCornerShape(16.dp),
             maxLines = 1,
             textStyle = TextStyle(
                 fontSize = 14.sp,
@@ -159,11 +165,7 @@ fun EditDoctorProfile(navController: NavHostController) {
                 )
             },
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
-            colors = TextFieldDefaults.colors(
-                focusedIndicatorColor = Color.Transparent,
-                unfocusedIndicatorColor = Color.Transparent,
-                disabledIndicatorColor = Color.Transparent
-            )
+            colors = colors
         )
         Spacer(modifier = Modifier.size(8.dp))
         Text(
@@ -176,10 +178,10 @@ fun EditDoctorProfile(navController: NavHostController) {
             )
         )
         Spacer(modifier = Modifier.size(8.dp))
-        TextField(
+        OutlinedTextField(
             value = address, onValueChange = { address = it },
             modifier = Modifier.fillMaxWidth().height(56.dp),
-            shape = RoundedCornerShape(8.dp),
+            shape = RoundedCornerShape(16.dp),
             maxLines = 1,
             textStyle = TextStyle(
                 fontSize = 14.sp,
@@ -195,11 +197,7 @@ fun EditDoctorProfile(navController: NavHostController) {
                 )
             },
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
-            colors = TextFieldDefaults.colors(
-                focusedIndicatorColor = Color.Transparent,
-                unfocusedIndicatorColor = Color.Transparent,
-                disabledIndicatorColor = Color.Transparent
-            )
+            colors = colors
         )
         Spacer(modifier = Modifier.size(30.dp))
         Box(

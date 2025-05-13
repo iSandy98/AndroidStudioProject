@@ -18,6 +18,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Slider
 import androidx.compose.material3.SliderDefaults
 import androidx.compose.material3.Text
@@ -37,9 +38,14 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import com.example.myfirstapplication.H1styleVer2
+import com.example.myfirstapplication.H3style
+import com.example.myfirstapplication.H3styleVer3
+import com.example.myfirstapplication.H4styleVer3
 import com.example.myfirstapplication.H5style
 import com.example.myfirstapplication.R
 
@@ -49,7 +55,7 @@ fun TrackerScreen(navController: NavHostController) {
     LazyColumn(
         modifier = Modifier.fillMaxSize()
             .padding(start = 40.dp, end = 40.dp, top = 60.dp),
-        verticalArrangement = Arrangement.spacedBy(40.dp)
+        verticalArrangement = Arrangement.spacedBy(50.dp)
     ){
         item{
             EmojiSlider()
@@ -81,7 +87,7 @@ fun EmojiSlider(){
     ) {
         Text(
             text = "Ваше настроение на сегодня",
-            fontSize = 16.sp,
+            fontSize = 20.sp,
             fontFamily = robotoFamily,
             fontWeight = FontWeight.Medium,
             color = colorResource(R.color.blue_main)
@@ -141,17 +147,18 @@ fun DreamSlider() {
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(
-            text = "Как прошел Ваш сон?", fontSize = 16.sp,
+            text = "Как прошел Ваш сон?", fontSize = 20.sp,
             fontFamily = robotoFamily, fontWeight = FontWeight.Medium,
             color = colorResource(R.color.blue_main)
         )
-        Spacer(Modifier.size(16.dp))
+        Spacer(Modifier.size(5.dp))
         Text(
-            text = "Длительность сна", fontSize = 12.sp,
-            fontWeight = FontWeight.Normal, fontFamily = robotoFamily,
-            color = colorResource(R.color.gray)
+            text = "Длительность сна",
+            fontSize = 16.sp, fontFamily = robotoFamily,
+            fontWeight = FontWeight.Normal, color = Color(0xFF8F9090),
+            textAlign = TextAlign.Center
         )
-        Spacer(Modifier.size(16.dp))
+        Spacer(Modifier.size(20.dp))
         //Слайдер Длительность сна
         Slider(
             value = durationSliderPosition,
@@ -172,13 +179,14 @@ fun DreamSlider() {
             Text("1 ч", color = colorResource(R.color.gray))
             Text("10 ч", color = colorResource(R.color.gray))
         }
-        Spacer(Modifier.size(30.dp))
+        Spacer(Modifier.size(50.dp))
         Text(
-            text = "Качество сна по 10-тибальной шкале", fontSize = 12.sp,
-            fontWeight = FontWeight.Normal, fontFamily = robotoFamily,
-            color = colorResource(R.color.gray)
+            text = "Качество сна по 10-тибальной шкале",
+            fontSize = 16.sp, fontFamily = robotoFamily,
+            fontWeight = FontWeight.Normal, color = Color(0xFF8F9090),
+            textAlign = TextAlign.Center
         )
-        Spacer(Modifier.size(16.dp))
+        Spacer(Modifier.size(20.dp))
         //Слайдер качество сна
         Slider(
             value = qualitySliderPosition,
@@ -222,22 +230,25 @@ fun DrugTracker(navController: NavHostController) {
             modifier = Modifier.fillMaxWidth(),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Text("Трекер приема лекарств", style = H5style)
+            Text("Трекер приема лекарств", fontSize = 20.sp,
+                fontFamily = robotoFamily, fontWeight = FontWeight.Medium,
+                color = colorResource(R.color.blue_main))
             Spacer(Modifier.size(30.dp))
             Image(
                 painter = painterResource(id = R.drawable.icon_drug),
                 contentDescription = "Иконка лекарства",
-                modifier = Modifier.size(24.dp)
+                modifier = Modifier.size(50.dp)
             )
 
-            Spacer(modifier = Modifier.width(15.dp))
+            Spacer(Modifier.size(15.dp))
 
             Text(
-                text = "Принято 2/3",
-                style = MaterialTheme.typography.bodyMedium,
-                color = colorResource(R.color.gray)
+                text = "Пожалуйста, отметьте прием лекарств",
+                style = H4styleVer3,
+                textAlign = TextAlign.Center
             )
-            Spacer(modifier = Modifier.width(54.dp))
+            Spacer(Modifier.size(30.dp))
+
             Button(
                 onClick = {
                     navController.navigate("drugs_screen")
@@ -250,7 +261,7 @@ fun DrugTracker(navController: NavHostController) {
                     disabledContentColor = colorResource(R.color.gray)
                 )
             ) {
-                Text(text = "Подробнее")
+                Text(text = "Отметить лекарства")
             }
         }
 }
@@ -258,30 +269,38 @@ fun DrugTracker(navController: NavHostController) {
 @Composable
 fun Feedback() {
     var feedbackText by remember { mutableStateOf("") }
+    val colors = OutlinedTextFieldDefaults.colors(
+        focusedContainerColor = Color.White,    // Белый фон в фокусированном состоянии
+        unfocusedContainerColor = Color.White,  // Белый фон в обычном состоянии
+        disabledContainerColor = Color.White,   // Белый фон в отключенном состоянии
+
+        focusedBorderColor = Color.Transparent,
+        unfocusedBorderColor = Color.Transparent,
+        disabledBorderColor = Color.Transparent
+    )
     Column(
         modifier = Modifier.fillMaxWidth(),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Text("Отклик лечащему врачу", style = H2style)
+        Text("Отклик лечащему врачу", fontSize = 20.sp,
+            fontFamily = robotoFamily, fontWeight = FontWeight.Medium,
+            color = colorResource(R.color.blue_main))
         Spacer(Modifier.size(10.dp))
-        Text("Пожеланию можете оставить сообщение Вашему лечащему врачу.", style = H5style)
+        Text("Пожеланию можете оставить сообщение Вашему лечащему врачу:", style = H4styleVer3,
+            textAlign = TextAlign.Center)
         Spacer(Modifier.size(16.dp))
         TextField(value = feedbackText, onValueChange = { feedbackText = it},
             modifier = Modifier.fillMaxWidth().height(56.dp),
-            shape = RoundedCornerShape(8.dp),
+            shape = RoundedCornerShape(16.dp),
             maxLines = 1,
             textStyle = TextStyle(fontSize = 14.sp, fontFamily = robotoFamily, fontWeight = FontWeight.Normal),
             placeholder = { Text(text = "Начни писать здесь", style = H5style)},
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
-            colors = TextFieldDefaults.colors(
-                focusedIndicatorColor = Color.Transparent,
-                unfocusedIndicatorColor = Color.Transparent,
-                disabledIndicatorColor = Color.Transparent
+            colors = colors
             )
-        )
         Spacer(Modifier.size(12.dp))
         //Календарь
-        Spacer(Modifier.size(30.dp))
+        Spacer(Modifier.size(15.dp))
         Button(
             onClick = {},
             modifier = Modifier.height(48.dp),
@@ -294,6 +313,7 @@ fun Feedback() {
         ) {
             Text(text = "Отправить")
         }
+        Spacer(Modifier.size(30.dp))
     }
 }
 

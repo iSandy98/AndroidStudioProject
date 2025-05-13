@@ -44,6 +44,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import com.example.myfirstapplication.H1styleVer2
 import com.example.myfirstapplication.H3style
 import com.example.myfirstapplication.H4styleVer2
 import com.example.myfirstapplication.H4styleVer3
@@ -206,8 +207,9 @@ fun WeekDaysHeader() {
             Text(
                 text = day,
                 fontWeight = FontWeight.Bold,
-                modifier = Modifier.weight(1f),
-                textAlign = TextAlign.Center
+                modifier = Modifier.weight(2f),
+                textAlign = TextAlign.Center,
+                color = Color.Blue
             )
         }
     }
@@ -286,7 +288,8 @@ fun Diagramma(moodData: List<Mood>, header: String) {
     ) {
         Text(
             text = header,
-            modifier = Modifier.padding(bottom = 16.dp)
+            modifier = Modifier.padding(bottom = 16.dp),
+            style = H1styleVer2
         )
         // Основной контейнер диаграммы
         Box(
@@ -370,13 +373,13 @@ fun DrugSchedule(){
     ) {
         Text(
             text = "График приема лекарств",
-            style = H2style.copy(fontSize = 18.sp),
+            style = H1styleVer2.copy(fontSize = 18.sp),
             modifier = Modifier.fillMaxWidth(),
             textAlign = TextAlign.Center,
             color = colorResource(R.color.blue_main)
         )
 
-        Spacer(modifier = Modifier.height(20.dp))
+        Spacer(modifier = Modifier.height(30.dp))
 
         Row(
             modifier = Modifier.fillMaxWidth(),
@@ -445,7 +448,7 @@ private fun TimeBlock(
         shape = RoundedCornerShape(8.dp),
         color = Color.White,
         border = BorderStroke(1.dp, colorResource(R.color.blue_main).copy(alpha = 0.3f)),
-        shadowElevation = 4.dp
+        shadowElevation = 1.dp
     ) {
         Column(
             modifier = Modifier.padding(8.dp)
@@ -508,40 +511,49 @@ fun DrugScheduleItem(drug: Drug) {
 
 
 @Composable
-fun PatientPerspective(){
+fun PatientPerspective() {
     Column(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 20.dp, vertical = 24.dp)
+    ) {
+        Text(
+            text = "Ваш профиль",
+            textAlign = TextAlign.Center,
+            style = H1styleVer2,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(bottom = 20.dp)
+        )
 
-        ){
-        Text("ФИО:", style = H4styleVer2)
-        Spacer(Modifier.size(5.dp))
-        Text("Иванов Максим Иванович", style = H4styleVer3)
-        Spacer(Modifier.size(15.dp))
-        Text("Дата рождения:", style = H4styleVer2)
-        Spacer(Modifier.size(5.dp))
-        Text("02.04.1987", style = H4styleVer3)
-        Spacer(Modifier.size(15.dp))
-        Text("Телефон:", style = H4styleVer2)
-        Spacer(Modifier.size(5.dp))
-        Text("7 (924) 856 45 36", style = H4styleVer3)
-        Spacer(Modifier.size(15.dp))
-        Text("Адрес:", style = H4styleVer2)
-        Spacer(Modifier.size(5.dp))
-        Text("г.Якутск, ул. Ленина 1", style = H4styleVer3)
-        Spacer(Modifier.size(30.dp))
-        Text("Медицинская организация", style = H3style)
-        Spacer(Modifier.size(23.dp))
-        Text("Лечащий врач", style = H4styleVer2)
-        Spacer(Modifier.size(5.dp))
-        Text("Иванова А.П.", style = H4styleVer3)
-        Spacer(Modifier.size(15.dp))
-        Text("Диагноз", style = H4styleVer2)
-        Spacer(Modifier.size(5.dp))
-        Text("F32.1(Депрессия)", style = H4styleVer3)
-        Spacer(Modifier.size(15.dp))
-        Text("Группа крови", style = H4styleVer2)
-        Spacer(Modifier.size(5.dp))
-        Text("A(II) Rh+", style = H4styleVer3)
+        PatientField("ФИО:", "Иванов Максим Иванович")
+        PatientField("Дата рождения:", "02.04.1987")
+        PatientField("Телефон:", "7 (924) 856 45 36")
+        PatientField("Адрес:", "г. Якутск, ул. Ленина 1")
+
+        Spacer(modifier = Modifier.height(30.dp))
+
+        Text(
+            text = "Медицинская организация",
+            textAlign = TextAlign.Center,
+            style = H1styleVer2,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(bottom = 20.dp)
+        )
+
+        PatientField("Лечащий врач", "Иванова А.П.")
+        PatientField("Диагноз", "F32.1 (Депрессия)")
+        PatientField("Группа крови", "A(II) Rh+")
     }
+}
 
+
+@Composable
+fun PatientField(title: String, value: String) {
+    Column(modifier = Modifier.padding(bottom = 16.dp)) {
+        Text(text = title, style = H4styleVer2)
+        Spacer(modifier = Modifier.height(4.dp))
+        Text(text = value, style = H4styleVer3)
+    }
 }

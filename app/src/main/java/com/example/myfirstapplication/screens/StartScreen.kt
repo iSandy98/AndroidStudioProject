@@ -21,6 +21,7 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.example.myfirstapplication.R
 import com.example.myfirstapplication.whoVisit
@@ -38,8 +39,10 @@ fun StartScreen(navController: NavHostController) {
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ){
-        Text(text = "Добро пожаловать!", style = MaterialTheme.typography.headlineMedium)
-        Text(text = "Выберите свою роль для входа", style = MaterialTheme.typography.labelLarge)
+        Text(text = "Прежде чем начать", fontSize = 20.sp, fontWeight = FontWeight.Bold, fontFamily = robotoFamily, color = colorResource(R.color.blue_main))
+        Spacer(modifier = Modifier.size(5.dp))
+        Text(text = "Выберите свою роль для входа", fontSize = 12.sp, fontWeight = FontWeight.Normal,
+            fontFamily = robotoFamily, color = colorResource(R.color.gray))
         Spacer(modifier = Modifier.size(50.dp))
         Button(
             onClick = {

@@ -4,14 +4,20 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.CheckCircle
+import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material.icons.filled.Face
 import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -24,6 +30,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -63,8 +70,10 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             val navController = rememberNavController()
-//            MyApp()
-            DrugsAddScreen(navController)
+            MyApp()
+                //DrugsAddScreen(navController)
+            //SignUpScreen(navController)
+                //DoctorMainMenuScreen(navController)
         }
     }
 }
@@ -75,7 +84,7 @@ fun MyTopBar(
     title: String,
     onNavigationClick: () -> Unit
 ) {
-    val showBackButton = title.isNotBlank() && title != "Онбординг" && title != "Начало"
+    val showBackButton = title.isNotBlank() && title != "Онбординг" && title != "Начало" && title != "Регистрация"
 
     TopAppBar(
         title = { Text(text = title) },
@@ -90,9 +99,9 @@ fun MyTopBar(
             }
         },
         colors = TopAppBarDefaults.topAppBarColors(
-            containerColor = MaterialTheme.colorScheme.primary,
-            titleContentColor = MaterialTheme.colorScheme.onPrimary,
-            navigationIconContentColor = MaterialTheme.colorScheme.onPrimary
+            containerColor = Color(0xFF4B84F1),
+            titleContentColor = Color.White,
+            navigationIconContentColor = Color.White
         )
     )
 }
@@ -102,34 +111,33 @@ fun MyBottomBar(
     navController: NavHostController,
     currentRoute: String?
 ) {
-    val items = listOf(
-        BottomNavItem(
-            route = "tracker_screen",
-            icon = Icons.Default.Home,
-            label = "Трекер"
-        ),
-        BottomNavItem(
-            route = "drugs_screen",
-            icon = Icons.Default.CheckCircle,
-            label = "Лекарства"
-        ),
-        BottomNavItem(
-            route = "patient_profile_screen",
-            icon = Icons.Default.Person,
-            label = "Профиль"
+    val items = if (whoVisit == "Пациент") {
+        listOf(
+            BottomNavItem("tracker_screen", Icons.Default.Home, "Трекер"),
+            BottomNavItem("drugs_screen", Icons.Default.CheckCircle, "Лекарства"),
+            BottomNavItem("patient_profile_screen", Icons.Default.Person, "Профиль")
         )
-    )
+    } else {
+        listOf(
+            BottomNavItem("notification_screen", Icons.Default.Notifications, "Почта"),
+            BottomNavItem("edit_doctor_screen", Icons.Default.Edit, "Настройки"),
+            BottomNavItem("doctor_main_menu_screen", Icons.Default.Face, "Список"),
+            BottomNavItem("doctor_profile_screen", Icons.Default.Person, "Профиль")
+        )
+    }
 
+    val accentColor = Color.Blue// синий акцент
     NavigationBar(
-        containerColor = MaterialTheme.colorScheme.surfaceVariant,
+        containerColor = Color.White,
         tonalElevation = 8.dp
     ) {
         val backStackEntry = navController.currentBackStackEntryAsState().value
+
         items.forEach { item ->
+            val selected = currentRoute == item.route
+
             NavigationBarItem(
-                icon = { Icon(item.icon, contentDescription = item.label) },
-                label = { Text(item.label) },
-                selected = currentRoute == item.route,
+                selected = selected,
                 onClick = {
                     navController.navigate(item.route) {
                         popUpTo(navController.graph.findStartDestination().id) {
@@ -138,10 +146,32 @@ fun MyBottomBar(
                         launchSingleTop = true
                         restoreState = true
                     }
-                }
+                },
+                icon = {
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.Center
+                    ) {
+                        Icon(
+                            imageVector = item.icon,
+                            contentDescription = item.label,
+                            modifier = Modifier.size(24.dp),
+                            tint = if (selected) accentColor else Color.Blue
+                        )
+                        Spacer(Modifier.height(2.dp))
+                        Text(
+                            text = item.label,
+                            fontSize = 10.sp,
+                            fontWeight = if (selected) FontWeight.SemiBold else FontWeight.Normal,
+                            color = if (selected) accentColor else Color.Gray
+                        )
+                    }
+                },
+                alwaysShowLabel = false // убирает стандартный label, мы его рисуем вручную
             )
         }
     }
+
 }
 
 data class BottomNavItem(
@@ -158,20 +188,18 @@ fun MyApp() {
     val currentRoute = currentBackStackEntry?.destination?.route
 
     val screenTitles = mapOf(
-        "start_screen" to "Начало",
-        "tracker_screen" to "Трекер",
-        "sign_up_screen" to "Регистрация",
+        "tracker_screen" to "",
+        "sign_up_screen" to "",
         "sign_in_screen" to "Вход",
-        "patient_profile_screen" to "Профиль пациента",
-        "onboarding_screen" to "Онбординг",
+        "patient_profile_screen" to "",
         "notification_screen" to "Уведомления",
         "entry_screen" to "Вход",
-        "edit_patient_screen" to "Редактировать пациента",
-        "edit_doctor_screen" to "Редактировать врача",
+        "edit_patient_screen" to "",
+        "edit_doctor_screen" to "",
         "drugs_screen" to "Лекарства",
         "drugs_add_screen" to "Добавить лекарство",
-        "doctor_profile_screen" to "Профиль врача",
-        "doctor_main_menu_screen" to "Меню врача",
+        "doctor_profile_screen" to "",
+        "doctor_main_menu_screen" to "",
         "doctor_appointment_screen" to "Приемы"
     )
 
@@ -179,7 +207,10 @@ fun MyApp() {
         "tracker_screen",
         "drugs_screen",
         "patient_profile_screen",
-        "doctor_main_menu_screen"
+        "doctor_main_menu_screen",
+        "notification_screen",
+        "edit_doctor_screen",
+        "doctor_profile_screen"
     )
 
     val title = screenTitles[currentRoute] ?: ""

@@ -1,6 +1,8 @@
 package com.example.myfirstapplication.screens
 
+import android.util.Log
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -17,12 +19,17 @@ import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.ArrowForward
+import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -30,19 +37,24 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.example.myfirstapplication.H1styleVer2
 import com.example.myfirstapplication.H3style
@@ -53,62 +65,65 @@ import com.example.myfirstapplication.R
 import com.example.myfirstapplication.classes.Drug
 import com.example.myfirstapplication.classes.DrugStatus
 import com.example.myfirstapplication.classes.Mood
+import com.example.myfirstapplication.classes.Prefs
+import com.example.myfirstapplication.viewmodels.DrugCalendarViewModel
+import com.example.myfirstapplication.viewmodels.DrugsViewModel
+import com.example.myfirstapplication.viewmodels.ProfileViewModel
+import com.example.myfirstapplication.viewmodels.WellbeingViewModel
 import com.example.myfirstapplication.whoVisit
 import java.time.LocalDate
+import java.time.YearMonth
 import java.time.format.TextStyle
 import java.util.Locale
 
-
-
-
 @Composable
-fun PatientProfileScreen(navController: NavHostController) {
-    if (whoVisit == "Пациент"){
+fun PatientProfileScreen(
+    navController: NavHostController,
+    phone: String,
+) {
+    if (whoVisit == "Пациент") {
         PatientPerspective()
-    }else{
-        DoctorPerspective()
+    } else {
+        DoctorPerspective(
+            navController = navController,
+            phone = phone
+        )
     }
 }
 
+
 @Composable
-fun DoctorPerspective() {
-    val moodData = remember {
-        listOf(
-            Mood("Пн", 1),
-            Mood("Вт", 2),
-            Mood("Ср", 3),
-            Mood("Чт", 4),
-            Mood("Пт", 5),
-            Mood("Сб", 6),
-            Mood("Вс", 7)
-        )
+fun DoctorPerspective(
+    navController: NavHostController,
+    phone: String,
+    wellbeingViewModel: WellbeingViewModel = hiltViewModel()
+) {
+    LaunchedEffect(phone) {
+        wellbeingViewModel.loadHistoryForPhone(phone)
     }
-    val sleepData = remember {
-        listOf(
-            Mood("Пн", 7),
-            Mood("Вт", 6),
-            Mood("Ср", 5),
-            Mood("Чт", 4),
-            Mood("Пт", 3),
-            Mood("Сб", 2),
-            Mood("Вс", 1)
-        )
-    }
+
+    val moodData  by wellbeingViewModel.moodHistory.collectAsState()
+    val sleepData by wellbeingViewModel.sleepHistory.collectAsState()
+
     LazyColumn(
-        modifier = Modifier.fillMaxSize()
+        modifier = Modifier
+            .fillMaxSize()
             .padding(top = 60.dp),
         verticalArrangement = Arrangement.spacedBy(40.dp)
     ) {
-        item{
-            DrugSchedule()
+        item {
+            DrugSchedule(
+                navController = navController,
+                phone = phone
+            )
         }
-        item{
-            DrugCalendar()
+        item {
+            DrugCalendar(phone = phone)
         }
-        item{
+        item {
             Diagramma(moodData, "Диаграмма настроения")
         }
-        item{
+        item {
             Diagramma(sleepData, "Диаграмма Cна")
         }
 
@@ -116,19 +131,23 @@ fun DoctorPerspective() {
 }
 
 @Composable
-fun DrugCalendar() {
+fun DrugCalendar(
+    viewModel: DrugCalendarViewModel = hiltViewModel(),
+    phone:String
+) {
     var currentDate by remember { mutableStateOf(LocalDate.now()) }
 
-    //Пример
-    val calendarData = remember(currentDate) {
-        val daysInMonth = currentDate.lengthOfMonth()
-        List(daysInMonth) { day ->
-            when ((day + 1) % 5) {
-                0 -> DrugStatus.MISSED
-                1 -> DrugStatus.PARTIAL
-                else -> DrugStatus.TAKEN
-            }
-        }
+    // При смене месяца загружаем данные
+    LaunchedEffect(currentDate) {
+        viewModel.loadMonth(YearMonth.from(currentDate), phone)
+    }
+
+    val statuses by viewModel.statuses.collectAsState()
+    val daysInMonth = currentDate.lengthOfMonth()
+
+    val calendarData = List(daysInMonth) { idx ->
+        val date = currentDate.withDayOfMonth(idx + 1)
+        statuses[date] ?: DrugStatus.MISSED
     }
 
     Column(
@@ -149,7 +168,10 @@ fun DrugCalendar() {
 
         Spacer(modifier = Modifier.height(8.dp))
 
-        CalendarGrid(currentDate = currentDate, calendarData = calendarData)
+        CalendarGrid(
+            currentDate = currentDate,
+            calendarData = calendarData
+        )
     }
 }
 
@@ -158,37 +180,36 @@ fun CalendarGrid(
     currentDate: LocalDate,
     calendarData: List<DrugStatus>
 ) {
-    val firstDayOfWeek = currentDate.withDayOfMonth(1).dayOfWeek.value // 1=Пн, 7=Вс
-    val daysInMonth = currentDate.lengthOfMonth()
+    val firstDayOffset = (currentDate.withDayOfMonth(1).dayOfWeek.value + 6) % 7
+    val totalDays = calendarData.size
     val today = LocalDate.now()
-
-    val emptyCells = (firstDayOfWeek - 1) % 7
     var dayCounter = 1
 
-    Column(modifier = Modifier.fillMaxWidth()) {
-        repeat(6) { week -> // Максимум 6 недель в месяце
-            if (dayCounter <= daysInMonth) {
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween
-                ) {
-                    repeat(7) { column ->
-                        if (week == 0 && column < emptyCells) {
-                            // Пустые ячейки в первой строке
-                            Box(modifier = Modifier.weight(1f).aspectRatio(1f))
-                        } else if (dayCounter <= daysInMonth) {
-                            // Ячейка с числом
-                            CalendarDay(
-                                day = dayCounter,
-                                status = calendarData[dayCounter - 1],
-                                isToday = currentDate.withDayOfMonth(dayCounter) == today,
-                                modifier = Modifier.weight(1f)
-                            )
-                            dayCounter++
-                        } else {
-                            // Пустые ячейки после последнего числа
-                            Box(modifier = Modifier.weight(1f).aspectRatio(1f))
-                        }
+    Column(Modifier.fillMaxWidth()) {
+        repeat(6) { week ->
+            Row(
+                Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                repeat(7) { col ->
+                    if ((week == 0 && col < firstDayOffset) || dayCounter > totalDays) {
+                        // пустая ячейка
+                        Box(
+                            Modifier
+                                .weight(1f)
+                                .aspectRatio(1f)
+                        )
+                    } else {
+                        CalendarDay(
+                            day = dayCounter,
+                            status = calendarData[dayCounter - 1],
+                            isToday = currentDate.withDayOfMonth(dayCounter) == today,
+                            modifier = Modifier
+                                .weight(1f)
+                                .aspectRatio(1f)
+                                .padding(4.dp)
+                        )
+                        dayCounter++
                     }
                 }
             }
@@ -231,7 +252,10 @@ private fun MonthNavigation(
         }
 
         Text(
-            text = currentDate.month.getDisplayName(TextStyle.FULL, Locale.getDefault()) + " " + currentDate.year,
+            text = currentDate.month.getDisplayName(
+                TextStyle.FULL,
+                Locale.getDefault()
+            ) + " " + currentDate.year,
             fontWeight = FontWeight.Bold
         )
 
@@ -255,6 +279,8 @@ private fun CalendarDay(
         DrugStatus.MISSED -> colors.errorContainer to colors.error
     }
 
+    Log.d("CalendarDay", status.toString())
+
     Box(
         modifier = modifier
             .aspectRatio(1f)
@@ -264,8 +290,7 @@ private fun CalendarDay(
                 width = if (isToday) 2.dp else 1.dp,
                 color = if (isToday) colors.primary else borderColor,
                 shape = CircleShape
-            )
-            .clickable { /* Обработка клика */ },
+            ),
         contentAlignment = Alignment.Center
     ) {
         Text(
@@ -346,84 +371,181 @@ private fun MoodBar(day: String, value: Int) {
 }
 
 @Composable
-fun DrugSchedule(){
-    val drugs = remember {
-        listOf(
-            Drug("Аспирин","100мг", listOf("Утро", "Вечер")),
-            Drug("Витамины", "100мг", listOf("Утро")),
-            Drug("Омепразол", "100мг", listOf("Обед")),
-            Drug("Мелатонин", "100мг", listOf("Ночь"))
-        )
+fun DrugSchedule(
+    navController: NavHostController,
+    phone: String,
+    profileViewModel: ProfileViewModel = hiltViewModel(),
+    drugsViewModel: DrugsViewModel = hiltViewModel()
+) {
+    LaunchedEffect(phone) {
+        if (phone.isNotBlank()) {
+            profileViewModel.loadProfileByPhone(phone)
+            drugsViewModel.loadDrugs(phone)
+        }
     }
+
+    val profile by profileViewModel.userProfile.collectAsState()
+    val drugs by drugsViewModel.drugs.collectAsState()
+
+    if (profile == null) {
+        Box(
+            modifier = Modifier.fillMaxWidth(),
+            contentAlignment = Alignment.Center
+        ) {
+            CircularProgressIndicator()
+        }
+        return
+    }
+
+    var showChangeTreatment by remember { mutableStateOf(false) }
+
     val drugsByTime = remember(drugs) {
-        mapOf(
-            "Утро" to drugs.filter { it.times.contains("Утро") },
-            "Обед" to drugs.filter { it.times.contains("Обед") },
-            "Вечер" to drugs.filter { it.times.contains("Вечер") },
-            "Ночь" to drugs.filter { it.times.contains("Ночь") }
-        )
+        listOf("Утро", "День", "Вечер", "Ночь").associateWith { time ->
+            drugs.filter { it.times.contains(time) }
+        }
     }
+
     val maxItemsInColumn = remember(drugsByTime) {
         drugsByTime.values.maxOfOrNull { it.size } ?: 0
     }
+
     Column(
         modifier = Modifier
             .fillMaxSize()
             .padding(16.dp)
     ) {
-        Text(
-            text = "График приема лекарств",
-            style = H1styleVer2.copy(fontSize = 18.sp),
-            modifier = Modifier.fillMaxWidth(),
-            textAlign = TextAlign.Center,
-            color = colorResource(R.color.blue_main)
-        )
-
-        Spacer(modifier = Modifier.height(30.dp))
+        Text("ФИО:", style = H4styleVer2)
+        Spacer(Modifier.height(5.dp))
 
         Row(
             modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(16.dp)
+            verticalAlignment = Alignment.CenterVertically
         ) {
-            // Левый столбец (Утро и Вечер)
-            Column(
-                modifier = Modifier.weight(1f),
-                verticalArrangement = Arrangement.spacedBy(16.dp)
-            ) {
-                TimeBlock(
-                    time = "Утро",
-                    title = "Утренний прием",
-                    drugs = drugsByTime["Утро"] ?: emptyList(),
-                    minHeight = maxItemsInColumn
-                )
+            // Сам текст ФИО
+            Text(
+                text = profile?.fullName ?: "",
+                style = H4styleVer3,
+            )
 
-                TimeBlock(
-                    time = "Вечер",
-                    title = "Вечерний прием",
-                    drugs = drugsByTime["Вечер"] ?: emptyList(),
-                    minHeight = maxItemsInColumn
+            // Небольшой отступ перед иконкой
+            Spacer(Modifier.width(40.dp))
+
+            // Иконка редактирования — размер 24dp, чтобы «сидела» по высоте строки
+            IconButton(
+                onClick = {
+                    val phoneArg = profile?.phone ?: ""
+                    navController.navigate("edit_patient_screen/$phoneArg")
+                },
+                modifier = Modifier
+                    .size(24.dp) // убираем стандартный 48dp hit-box, чтобы не «выпирал»
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Edit,
+                    contentDescription = "Редактировать ФИО",
+                    modifier = Modifier.size(24.dp)  // чтобы иконка тоже была 24dp
                 )
             }
+        }
 
-            // Правый столбец (Обед и Ночь)
-            Column(
-                modifier = Modifier.weight(1f),
-                verticalArrangement = Arrangement.spacedBy(16.dp)
+        Spacer(Modifier.size(10.dp))
+        Text("Дата рождения:", style = H4styleVer2)
+        Spacer(Modifier.size(5.dp))
+        Text(profile?.birthDate ?: "", style = H4styleVer3)
+        Spacer(Modifier.size(15.dp))
+        Text("Телефон:", style = H4styleVer2)
+        Spacer(Modifier.size(5.dp))
+        Text(profile?.phone ?: "", style = H4styleVer3)
+        Spacer(Modifier.size(15.dp))
+        Text("Адрес:", style = H4styleVer2)
+        Spacer(Modifier.size(5.dp))
+        Text(profile?.address ?: "", style = H4styleVer3)
+        Spacer(Modifier.size(30.dp))
+
+        if(!showChangeTreatment) {
+            Text(
+                text = "График приема лекарств",
+                style = H1styleVer2.copy(fontSize = 18.sp),
+                modifier = Modifier.fillMaxWidth(),
+                textAlign = TextAlign.Center,
+                color = colorResource(R.color.blue_main)
+            )
+
+            Spacer(modifier = Modifier.height(30.dp))
+        }
+        if (!showChangeTreatment) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(16.dp)
             ) {
-                TimeBlock(
-                    time = "Обед",
-                    title = "Дневной прием",
-                    drugs = drugsByTime["Обед"] ?: emptyList(),
-                    minHeight = maxItemsInColumn
-                )
+                // Левый столбец (Утро и Вечер)
+                Column(
+                    modifier = Modifier.weight(1f),
+                    verticalArrangement = Arrangement.spacedBy(16.dp)
+                ) {
+                    TimeBlock(
+                        time = "Утро",
+                        title = "Утренний прием",
+                        drugs = drugsByTime["Утро"] ?: emptyList(),
+                        minHeight = maxItemsInColumn
+                    )
 
-                TimeBlock(
-                    time = "Ночь",
-                    title = "Ночной прием",
-                    drugs = drugsByTime["Ночь"] ?: emptyList(),
-                    minHeight = maxItemsInColumn
-                )
+                    TimeBlock(
+                        time = "Вечер",
+                        title = "Вечерний прием",
+                        drugs = drugsByTime["Вечер"] ?: emptyList(),
+                        minHeight = maxItemsInColumn
+                    )
+                }
+
+                // Правый столбец (Обед и Ночь)
+                Column(
+                    modifier = Modifier.weight(1f),
+                    verticalArrangement = Arrangement.spacedBy(16.dp)
+                ) {
+                    TimeBlock(
+                        time = "День",
+                        title = "Дневной прием",
+                        drugs = drugsByTime["День"] ?: emptyList(),
+                        minHeight = maxItemsInColumn
+                    )
+
+                    TimeBlock(
+                        time = "Ночь",
+                        title = "Ночной прием",
+                        drugs = drugsByTime["Ночь"] ?: emptyList(),
+                        minHeight = maxItemsInColumn
+                    )
+                }
             }
+        }
+        if (!showChangeTreatment) {
+            Box(
+                modifier = Modifier.fillMaxWidth(),
+                contentAlignment = Alignment.Center
+            ) {
+                Button(
+                    modifier = Modifier
+                        .padding(top = 20.dp),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = colorResource(R.color.blue_main),
+                        contentColor = colorResource(R.color.white)
+                    ),
+                    onClick = {
+                        showChangeTreatment = !showChangeTreatment
+                    }
+                ) {
+                    Text("Изменить лечение")
+                }
+            }
+        }
+        if (showChangeTreatment) {
+            // экран добавления / редактирования лекарств
+            DrugsAddScreen(
+                navController = navController,
+                modifier = Modifier.fillMaxWidth(),
+                onFinish = { showChangeTreatment = false },
+                phone = phone
+            )
         }
     }
 }
@@ -458,7 +580,8 @@ private fun TimeBlock(
                 text = title,
                 style = H3style.copy(fontSize = 16.sp),
                 color = colorResource(R.color.blue_main),
-                modifier = Modifier.padding(bottom = 8.dp)
+                modifier = Modifier
+                    .padding(bottom = 8.dp)
                     .align(Alignment.CenterHorizontally)
             )
 
@@ -495,11 +618,12 @@ private fun TimeBlock(
 @Composable
 fun DrugScheduleItem(drug: Drug) {
     Row(
-        modifier = Modifier.fillMaxWidth()
+        modifier = Modifier
+            .fillMaxWidth()
             .padding(horizontal = 8.dp),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween
-    ){
+    ) {
         Text(
             text = drug.name
         )
@@ -511,12 +635,39 @@ fun DrugScheduleItem(drug: Drug) {
 
 
 @Composable
-fun PatientPerspective() {
+fun PatientPerspective(
+    viewModel: ProfileViewModel = hiltViewModel(),
+    //userViewModel: UserViewModel = hiltViewModel()
+) {
+
+    val userId = remember { Prefs.userId ?: "" }
+    Log.d("PROFILE", "LaunchedEffect got userId = '$userId'")
+
+    LaunchedEffect(userId) {
+        if (userId.isNotBlank()) {
+            viewModel.loadProfile(userId)
+        }
+    }
+
+    // получаем профиль
+    val profile by viewModel.userProfile.collectAsState()
+
     Column(
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 20.dp, vertical = 24.dp)
     ) {
+        if (profile == null) {
+            // показываем загрузку
+            Box(
+                Modifier.fillMaxSize(),
+                contentAlignment = Alignment.Center
+            ) {
+                CircularProgressIndicator()
+            }
+            return@Column
+        }
+
         Text(
             text = "Ваш профиль",
             textAlign = TextAlign.Center,
@@ -526,10 +677,10 @@ fun PatientPerspective() {
                 .padding(bottom = 20.dp)
         )
 
-        PatientField("ФИО:", "Иванов Максим Иванович")
-        PatientField("Дата рождения:", "02.04.1987")
-        PatientField("Телефон:", "7 (924) 856 45 36")
-        PatientField("Адрес:", "г. Якутск, ул. Ленина 1")
+        profile?.fullName?.let { PatientField("ФИО:", it) }
+        profile?.birthDate?.let { PatientField("Дата рождения:", it) }
+        profile?.phone?.let { PatientField("Телефон:", it) }
+        profile?.address?.let { PatientField("Адрес:", it) }
 
         Spacer(modifier = Modifier.height(30.dp))
 
@@ -542,9 +693,9 @@ fun PatientPerspective() {
                 .padding(bottom = 20.dp)
         )
 
-        PatientField("Лечащий врач", "Иванова А.П.")
-        PatientField("Диагноз", "F32.1 (Депрессия)")
-        PatientField("Группа крови", "A(II) Rh+")
+        profile?.doctor?.let { PatientField("Лечащий врач:", it) }
+        profile?.diagnosis?.let { PatientField("Диагноз:", it) }
+        profile?.bloodGroup?.let { PatientField("Группа крови:", it) }
     }
 }
 

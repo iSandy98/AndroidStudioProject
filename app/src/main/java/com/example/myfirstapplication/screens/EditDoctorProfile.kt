@@ -1,5 +1,6 @@
 package com.example.myfirstapplication.screens
 
+import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -13,12 +14,15 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonColors
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -26,6 +30,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -34,19 +39,46 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.example.myfirstapplication.H1styleVer2
 import com.example.myfirstapplication.H3style
 import com.example.myfirstapplication.R
+import com.example.myfirstapplication.classes.DoctorProfile
+import com.example.myfirstapplication.classes.Prefs
+import com.example.myfirstapplication.viewmodels.ProfileViewModel
 
 
 @Composable
+fun EditDoctorProfile(
+    navController: NavHostController,
+    profileViewModel: ProfileViewModel = hiltViewModel()
+) {
+    val userId = remember { Prefs.userId ?: "" }
 
-fun EditDoctorProfile(navController: NavHostController) {
+    LaunchedEffect(userId) {
+        if (userId.isNotBlank()) {
+            profileViewModel.loadProfile(userId)
+        }
+    }
+
+    val profile by profileViewModel.doctorProfile.collectAsState()
+
     var fullname by remember { mutableStateOf("") }
-    var dateofbirth by remember { mutableStateOf("") }
     var phonenumber by remember { mutableStateOf("") }
-    var address by remember { mutableStateOf("") }
+    var job by remember { mutableStateOf("") }
+    var organization by remember { mutableStateOf("") }
+    var isSaving by remember { mutableStateOf(false) }
+    val context = LocalContext.current
+
+    LaunchedEffect(profile) {
+        profile?.let {
+            fullname     = it.fullName ?: ""
+            phonenumber  = it.phone ?: ""
+            job          = it.job ?: ""
+            organization = it.organization ?: ""
+        }
+    }
 
     val colors = OutlinedTextFieldDefaults.colors(
         focusedContainerColor = Color.White,    // Белый фон в фокусированном состоянии
@@ -65,6 +97,17 @@ fun EditDoctorProfile(navController: NavHostController) {
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.Start
     ) {
+
+        if (profile == null) {
+            Box(
+                Modifier.fillMaxSize(),
+                contentAlignment = Alignment.Center
+            ) {
+                CircularProgressIndicator()
+            }
+            return@Column
+        }
+
         Text(
             text = "Редактирование профиля",
             style = H1styleVer2,
@@ -83,7 +126,8 @@ fun EditDoctorProfile(navController: NavHostController) {
         )
         Spacer(modifier = Modifier.size(8.dp))
         OutlinedTextField(
-            value = fullname, onValueChange = { fullname = it },
+            value = fullname,
+            onValueChange = { fullname = it },
             modifier = Modifier.fillMaxWidth().height(56.dp),
             shape = RoundedCornerShape(16.dp),
             maxLines = 1,
@@ -94,7 +138,7 @@ fun EditDoctorProfile(navController: NavHostController) {
             ),
             placeholder = {
                 Text(
-                    text = "Никитина Антонина Николаевна",
+                    text = "ФИО",
                     fontSize = 14.sp,
                     color = colorResource(R.color.gray),
                     fontFamily = robotoFamily
@@ -115,7 +159,7 @@ fun EditDoctorProfile(navController: NavHostController) {
         )
         Spacer(modifier = Modifier.size(8.dp))
         OutlinedTextField(
-            value = dateofbirth, onValueChange = { dateofbirth = it },
+            value = job, onValueChange = { job = it },
             modifier = Modifier.fillMaxWidth().height(56.dp),
             shape = RoundedCornerShape(16.dp),
             maxLines = 1,
@@ -126,7 +170,7 @@ fun EditDoctorProfile(navController: NavHostController) {
             ),
             placeholder = {
                 Text(
-                    text = "Психиатр Нарколог",
+                    text = "Должность",
                     fontSize = 14.sp,
                     color = colorResource(R.color.gray),
                     fontFamily = robotoFamily
@@ -158,7 +202,7 @@ fun EditDoctorProfile(navController: NavHostController) {
             ),
             placeholder = {
                 Text(
-                    text = "7 924 867 55 45",
+                    text = "Номер",
                     fontSize = 14.sp,
                     color = colorResource(R.color.gray),
                     fontFamily = robotoFamily
@@ -179,7 +223,7 @@ fun EditDoctorProfile(navController: NavHostController) {
         )
         Spacer(modifier = Modifier.size(8.dp))
         OutlinedTextField(
-            value = address, onValueChange = { address = it },
+            value = organization, onValueChange = { organization = it },
             modifier = Modifier.fillMaxWidth().height(56.dp),
             shape = RoundedCornerShape(16.dp),
             maxLines = 1,
@@ -190,7 +234,7 @@ fun EditDoctorProfile(navController: NavHostController) {
             ),
             placeholder = {
                 Text(
-                    text = "РБ №2 ЦЭМП",
+                    text = "Организация",
                     fontSize = 14.sp,
                     color = colorResource(R.color.gray),
                     fontFamily = robotoFamily
@@ -204,7 +248,26 @@ fun EditDoctorProfile(navController: NavHostController) {
             Modifier.padding(start = 40.dp, end = 40.dp).fillMaxWidth()
         ) {
             Button(
-                onClick = {},
+                onClick = {
+                    isSaving = true
+                    profileViewModel.updateDoctorProfile(
+                        userId,
+                        DoctorProfile(
+                            fullName = fullname,
+                            phone = phonenumber,
+                            job = job,
+                            organization = organization
+                        )
+                    ) { success ->
+                        isSaving = false
+                        if (success) {
+                            Toast.makeText(context, "Успешно сохранено", Toast.LENGTH_SHORT).show()
+                        } else {
+                            // показать ошибку
+                        }
+                    }
+                },
+                enabled = !isSaving,
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(48.dp),
@@ -215,6 +278,7 @@ fun EditDoctorProfile(navController: NavHostController) {
                     disabledContentColor = colorResource(R.color.gray)
                 )
             ) {
+                if (isSaving) CircularProgressIndicator(modifier = Modifier.size(24.dp), strokeWidth = 2.dp)
                 Text(text = "Сохранить")
             }
         }

@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "68469961604",
+    "project_id": "moody-7a0bf",
+    "storage_bucket": "moody-7a0bf.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:68469961604:android:d03415d679ac01b8a163d1",
+        "android_client_info": {
+          "package_name": "com.example.myfirstapplication"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC7YmfB4289_UrMj7hYB4osV0lo799Em8c"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -15,6 +15,8 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonColors
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
@@ -38,13 +40,26 @@ import com.example.myfirstapplication.R
 import com.example.myfirstapplication.whoVisit
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.hilt.navigation.compose.hiltViewModel
+import com.example.myfirstapplication.classes.AuthState
+import com.example.myfirstapplication.classes.Prefs
+import com.example.myfirstapplication.viewmodels.AuthViewModel
+import com.example.myfirstapplication.viewmodels.UserViewModel
 
 
 @Composable
-fun SignUpScreen(navController: NavHostController) {
+fun SignUpScreen(
+    navController: NavHostController,
+    authViewModel: AuthViewModel = hiltViewModel(),
+    userViewModel: UserViewModel = hiltViewModel()
+) {
 
+    var fullName by remember { mutableStateOf("") }
     var phone by remember { mutableStateOf("") }
-    var fullname by remember { mutableStateOf("") }
+    val role = if (whoVisit == "Врач") "doctor" else "patient"
+    val authState by authViewModel.authState.collectAsState()
 
     Column(
         modifier = Modifier
@@ -61,7 +76,8 @@ fun SignUpScreen(navController: NavHostController) {
         Text(text = "Ваше ФИО", fontSize = 12.sp, fontWeight = FontWeight.Normal,
             fontFamily = robotoFamily, color = colorResource(R.color.gray))
         Spacer(Modifier.size(8.dp))
-        TextField(value = fullname, onValueChange = { fullname = it},
+        TextField(
+            value = fullName, onValueChange = { fullName = it},
             modifier = Modifier.fillMaxWidth().height(56.dp),
             shape = RoundedCornerShape(8.dp),
             maxLines = 1,
@@ -76,16 +92,15 @@ fun SignUpScreen(navController: NavHostController) {
                 unfocusedIndicatorColor = Color.Transparent,
                 disabledIndicatorColor = Color.Transparent,
                 cursorColor = Color.Gray,
-
-
             )
-
         )
         Spacer(Modifier.size(12.dp))
         Text(text = "Номер телефона", fontSize = 12.sp, fontWeight = FontWeight.Normal,
             fontFamily = robotoFamily, color = colorResource(R.color.gray))
         Spacer(Modifier.size(8.dp))
-        TextField(value = phone, onValueChange = { phone = it},
+        TextField(
+            value = phone,
+            onValueChange = { phone = it},
             modifier = Modifier.fillMaxWidth().height(56.dp),
             shape = RoundedCornerShape(8.dp),
             maxLines = 1,
@@ -104,16 +119,26 @@ fun SignUpScreen(navController: NavHostController) {
             )
         )
         Spacer(Modifier.size(32.dp))
+        when (authState) {
+            is AuthState.Loading -> CircularProgressIndicator(Modifier.align(Alignment.CenterHorizontally))
+            is AuthState.Error -> Text(
+                text = (authState as AuthState.Error).message,
+                color = MaterialTheme.colorScheme.error,
+                modifier = Modifier.padding(8.dp)
+            )
+            else -> { /* Idle or Success */ }
+        }
         Box(
             Modifier.padding(start = 40.dp, end = 40.dp).fillMaxWidth()
         ) {
             Button(
                 onClick = {
-                    if(whoVisit == "Врач") {
+                    /*if(whoVisit == "Врач") {
                         navController.navigate("doctor_main_menu_screen")
                     }else{
                         navController.navigate("tracker_screen")
-                    }
+                    }*/
+                    authViewModel.registerUser(fullName, phone, role)
                 },
                 modifier = Modifier
                     .fillMaxWidth()
@@ -140,7 +165,17 @@ fun SignUpScreen(navController: NavHostController) {
                 })
         }
 
+        if (authState is AuthState.Success) {
+            LaunchedEffect(authState) {
 
+                val success = authState as AuthState.Success
+                Prefs.userId = success.userId
+
+                if (success.role == "doctor") navController.navigate("doctor_main_menu_screen")
+                else navController.navigate("tracker_screen")
+                authViewModel.resetState()
+            }
+        }
 
     }
 }

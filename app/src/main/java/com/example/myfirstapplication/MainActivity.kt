@@ -1,6 +1,8 @@
 package com.example.myfirstapplication
 
+import android.annotation.SuppressLint
 import android.os.Bundle
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -30,6 +32,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -38,6 +41,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import com.example.myfirstapplication.screens.StartScreen
@@ -47,6 +51,7 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
+import com.example.myfirstapplication.classes.Prefs
 import com.example.myfirstapplication.screens.DoctorAppointmentScreen
 import com.example.myfirstapplication.screens.DoctorMainMenuScreen
 import com.example.myfirstapplication.screens.DoctorProfileScreen
@@ -60,9 +65,12 @@ import com.example.myfirstapplication.screens.Onboarding
 import com.example.myfirstapplication.screens.SignInScreen
 import com.example.myfirstapplication.screens.SignUpScreen
 import com.example.myfirstapplication.screens.TrackerScreen
+import com.example.myfirstapplication.viewmodels.ProfileViewModel
+import dagger.hilt.android.AndroidEntryPoint
 
 var whoVisit: String = ""
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -182,7 +190,8 @@ data class BottomNavItem(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MyApp() {
+fun MyApp(
+) {
     val navController = rememberNavController()
     val currentBackStackEntry = navController.currentBackStackEntryAsState().value
     val currentRoute = currentBackStackEntry?.destination?.route
@@ -233,20 +242,33 @@ fun MyApp() {
         ){
             NavHost(
                 navController = navController,
-                startDestination = "onboarding_screen"
+                startDestination = "onboarding_screen",
+                route = "root_graph"
             ) {
                 composable("start_screen") { StartScreen(navController) }
                 composable("tracker_screen") { TrackerScreen(navController) }
                 composable("sign_up_screen") { SignUpScreen(navController) }
                 composable("sign_in_screen") { SignInScreen(navController) }
-                composable("patient_profile_screen") { PatientProfileScreen(navController) }
+                composable("patient_profile_screen/{phone}") { backStackEntry ->
+                    val phone = backStackEntry.arguments?.getString("phone") ?: ""
+                    PatientProfileScreen(navController, phone = phone)
+                }
+                composable("patient_profile_screen") {
+                    PatientProfileScreen(navController, phone = "")
+                }
+
                 composable("onboarding_screen") { Onboarding(navController) }
                 composable("notification_screen") { Notifications(navController) }
                 composable("entry_screen") { EntryScreen(navController) }
-                composable("edit_patient_screen") { EditPatientProfile(navController) }
+                composable(
+                    "edit_patient_screen/{phone}",
+                ) { backStackEntry ->
+                    val phone = backStackEntry.arguments?.getString("phone") ?: ""
+                    EditPatientProfile(navController, phone = phone)
+                }
                 composable("edit_doctor_screen") { EditDoctorProfile(navController) }
                 composable("drugs_screen") { DrugsScreen(navController) }
-                composable("drugs_add_screen") { DrugsAddScreen(navController) }
+                composable("drugs_add_screen") { DrugsAddScreen(navController, Modifier, onFinish = {}, phone = "") }
                 composable("doctor_profile_screen") { DoctorProfileScreen(navController) }
                 composable("doctor_main_menu_screen") { DoctorMainMenuScreen(navController) }
                 composable("doctor_appointment_screen") { DoctorAppointmentScreen(navController) }
@@ -322,9 +344,3 @@ val H5styleVer5 = TextStyle(fontSize = 12.sp, fontFamily = robotoFamily,
 //Черный текст для лекарств
 val H5styleVer6 = TextStyle(fontSize = 12.sp, fontFamily = robotoFamily,
     fontWeight = FontWeight.Normal, color = Color(0xFF555555))
-
-
-
-
-
-

@@ -1,4 +1,5 @@
 package com.example.myfirstapplication.screens
+import android.widget.Toast
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
@@ -7,6 +8,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -15,14 +17,30 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.example.myfirstapplication.H3style
 import com.example.myfirstapplication.R
+import com.example.myfirstapplication.classes.UserProfile
+import com.example.myfirstapplication.viewmodels.ProfileViewModel
 
 
 @Composable
+fun EditPatientProfile(
+    navController: NavHostController,
+    phone:String,
+    profileViewModel: ProfileViewModel = hiltViewModel()
+) {
+    val context = LocalContext.current
 
-fun EditPatientProfile(navController: NavHostController) {
+    LaunchedEffect(phone) {
+        if (phone.isNotBlank()) {
+            profileViewModel.loadProfileByPhone(phone)
+        }
+    }
+
+    val profile by profileViewModel.userProfile.collectAsState()
+
     var fullname by remember { mutableStateOf("") }
     var dateofbirth by remember { mutableStateOf("") }
     var phonenumber by remember { mutableStateOf("") }
@@ -30,6 +48,26 @@ fun EditPatientProfile(navController: NavHostController) {
     var doctor by remember { mutableStateOf("") }
     var diagnosis by remember { mutableStateOf("") }
     var blood by remember { mutableStateOf("") }
+
+    LaunchedEffect(profile) {
+        profile?.let {
+            fullname = it.fullName ?: ""
+            dateofbirth = it.birthDate ?: ""
+            phonenumber = it.phone ?: ""
+            address = it.address ?: ""
+            doctor = it.doctor ?: ""
+            diagnosis = it.diagnosis ?: ""
+            blood = it.bloodGroup ?: ""
+        }
+    }
+
+    if (profile == null) {
+        Box(
+            modifier = Modifier.fillMaxSize(),
+            contentAlignment = Alignment.Center
+        ) { CircularProgressIndicator() }
+        return
+    }
 
     Column(
         modifier = Modifier
@@ -67,7 +105,7 @@ fun EditPatientProfile(navController: NavHostController) {
             ),
             placeholder = {
                 Text(
-                    text = "Иванов Макар Леонидович",
+                    text = profile?.fullName ?: "",
                     fontSize = 14.sp,
                     color = colorResource(R.color.gray),
                     fontFamily = robotoFamily
@@ -103,7 +141,7 @@ fun EditPatientProfile(navController: NavHostController) {
             ),
             placeholder = {
                 Text(
-                    text = "03.12.1987",
+                    text = profile?.birthDate ?: "",
                     fontSize = 14.sp,
                     color = colorResource(R.color.gray),
                     fontFamily = robotoFamily
@@ -139,7 +177,7 @@ fun EditPatientProfile(navController: NavHostController) {
             ),
             placeholder = {
                 Text(
-                    text = "7 924 867 55 45",
+                    text = profile?.phone ?: "",
                     fontSize = 14.sp,
                     color = colorResource(R.color.gray),
                     fontFamily = robotoFamily
@@ -175,7 +213,7 @@ fun EditPatientProfile(navController: NavHostController) {
             ),
             placeholder = {
                 Text(
-                    text = "г.Якутск, ул. Ленина 1",
+                    text = profile?.address ?: "",
                     fontSize = 14.sp,
                     color = colorResource(R.color.gray),
                     fontFamily = robotoFamily
@@ -211,7 +249,7 @@ fun EditPatientProfile(navController: NavHostController) {
             ),
             placeholder = {
                 Text(
-                    text = "Иванова Лидия Михайловна",
+                    text = profile?.doctor ?: "",
                     fontSize = 14.sp,
                     color = colorResource(R.color.gray),
                     fontFamily = robotoFamily
@@ -247,7 +285,7 @@ fun EditPatientProfile(navController: NavHostController) {
             ),
             placeholder = {
                 Text(
-                    text = "Депрессия (F1)",
+                    text = profile?.diagnosis ?: "",
                     fontSize = 14.sp,
                     color = colorResource(R.color.gray),
                     fontFamily = robotoFamily
@@ -283,7 +321,7 @@ fun EditPatientProfile(navController: NavHostController) {
             ),
             placeholder = {
                 Text(
-                    text = "A(II) Rh+",
+                    text = profile?.bloodGroup ?: "",
                     fontSize = 14.sp,
                     color = colorResource(R.color.gray),
                     fontFamily = robotoFamily
@@ -301,7 +339,25 @@ fun EditPatientProfile(navController: NavHostController) {
             Modifier.padding(start = 40.dp, end = 40.dp).fillMaxWidth()
         ) {
             Button(
-                onClick = {},
+                onClick = {
+                    val updated = UserProfile(
+                        fullName = fullname,
+                        birthDate = dateofbirth,
+                        phone = phonenumber,
+                        address = address,
+                        doctor = doctor,
+                        diagnosis = diagnosis,
+                        bloodGroup = blood
+                    )
+                    profileViewModel.updateUserProfileByPhone(phone, updated) { success ->
+                        if (success) {
+                            Toast.makeText(context, "Профиль сохранен", Toast.LENGTH_SHORT).show()
+                            navController.popBackStack()
+                        } else {
+                            Toast.makeText(context, "Ошибка при сохранении", Toast.LENGTH_SHORT).show()
+                        }
+                    }
+                },
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(48.dp),
@@ -318,4 +374,11 @@ fun EditPatientProfile(navController: NavHostController) {
     }
 }
 
-
+@Preview
+@Composable
+fun EditPatientProfilePreview(){
+    EditPatientProfile(
+        NavHostController(LocalContext.current),
+        ""
+    )
+}

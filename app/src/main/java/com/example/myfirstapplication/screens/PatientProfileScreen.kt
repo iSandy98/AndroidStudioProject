@@ -82,7 +82,7 @@ fun PatientProfileScreen(
     phone: String,
 ) {
     if (whoVisit == "Пациент") {
-        PatientPerspective()
+        PatientPerspective(navController = navController)
     } else {
         DoctorPerspective(
             navController = navController,
@@ -637,7 +637,7 @@ fun DrugScheduleItem(drug: Drug) {
 @Composable
 fun PatientPerspective(
     viewModel: ProfileViewModel = hiltViewModel(),
-    //userViewModel: UserViewModel = hiltViewModel()
+    navController: NavHostController
 ) {
 
     val userId = remember { Prefs.userId ?: "" }
@@ -696,6 +696,25 @@ fun PatientPerspective(
         profile?.doctor?.let { PatientField("Лечащий врач:", it) }
         profile?.diagnosis?.let { PatientField("Диагноз:", it) }
         profile?.bloodGroup?.let { PatientField("Группа крови:", it) }
+
+        Button(
+            onClick = {
+                // очистить сохранённый ID
+                Prefs.userId = null
+                // навигация на экран onboarding, очищая стек
+                navController.navigate("onboarding_screen") {
+                    popUpTo("onboarding_screen") { inclusive = true }
+                }
+            },
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = 16.dp),
+            colors = ButtonDefaults.buttonColors(
+                containerColor = Color.Red
+            )
+        ) {
+            Text(text = "Выйти из профиля")
+        }
     }
 }
 

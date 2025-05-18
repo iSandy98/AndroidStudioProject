@@ -49,6 +49,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
+import com.example.myfirstapplication.H1style
 import com.example.myfirstapplication.H1styleVer2
 import com.example.myfirstapplication.H3style
 import com.example.myfirstapplication.H3styleVer3
@@ -59,6 +60,9 @@ import com.example.myfirstapplication.classes.EntryState
 import com.example.myfirstapplication.classes.FeedbackState
 import com.example.myfirstapplication.viewmodels.FeedbackViewModel
 import com.example.myfirstapplication.viewmodels.WellbeingViewModel
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 
 @Composable
@@ -69,6 +73,19 @@ fun TrackerScreen(navController: NavHostController) {
             .padding(start = 40.dp, end = 40.dp, top = 60.dp),
         verticalArrangement = Arrangement.spacedBy(50.dp)
     ){
+        item{
+            val currentDate = remember {
+                SimpleDateFormat("d MMMM", Locale.getDefault())
+                    .format(Date())
+            }
+
+            Text(
+                text = currentDate,
+                style = H1style,
+                modifier = Modifier.fillMaxWidth(),
+                textAlign = TextAlign.Center
+            )
+        }
         item{
             EmojiSlider()
         }
